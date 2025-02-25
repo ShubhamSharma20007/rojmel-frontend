@@ -9,7 +9,6 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
-  Platform,
   Keyboard,
   Image,
   Alert

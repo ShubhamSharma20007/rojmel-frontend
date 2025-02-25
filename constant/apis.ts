@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 // http://localhost:5000
-let PRODUCTION = process.env.NODE_ENV !== 'development' ? "http://192.168.29.216:5000" : 'https://api.easyrojmel.in'
+let PRODUCTION = process.env.NODE_ENV === 'development' ? "https://api.easyrojmel.in" : 'https://api.easyrojmel.in'
 // https://rojmel-backend-fhd0.onrender.com'
 let PATH = Platform.OS === 'web' ? 'http://localhost:5000' : PRODUCTION
 
@@ -38,3 +38,9 @@ export const DELETE_LEDGER = `${API_ROUTE}/${LEDGER}`; // :id
 // Report 
 const REPORT = 'reports'
 export const DOWNLOAD_REPORT = `${API_ROUTE}/${REPORT}/generate`  // it will take query value
+
+
+//  Subscrption
+const SUBSCRIPTION = 'subscriptions'
+export const LIST_SUBSCRIPTION = `${API_ROUTE}/${SUBSCRIPTION}`
+export const CREATE_SUBSCRIPTION_ORDER = `${API_ROUTE}/${SUBSCRIPTION}/create-order`

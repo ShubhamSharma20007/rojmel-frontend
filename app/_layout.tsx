@@ -48,7 +48,8 @@ export default function Layout() {
           }}
         >
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="/components/subscription" />
+          <Stack.Screen name="/components/subscription"/>
+          <Stack.Screen name="/components/premiumSubscription"/>
           <Stack.Screen name="index" />
           <Stack.Screen name="register" />
           <Stack.Screen name="addPaymentForm" />
@@ -57,8 +58,8 @@ export default function Layout() {
             options={{
               headerShown: true,
               presentation: "modal",
-              animation: "slide_from_bottom", // Use slide_from_bottom animation
-              animationDuration: 400, // Adjust animation duration
+              animation: "slide_from_bottom", 
+              animationDuration: 400, 
             }}
           />
           <Stack.Screen

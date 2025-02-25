@@ -1,6 +1,6 @@
 import { Instance } from "@/lib/instance";
 import Toast from "react-native-toast-message";
-import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT } from "@/constant/apis";
+import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT, LIST_SUBSCRIPTION, CREATE_SUBSCRIPTION_ORDER } from "@/constant/apis";
 import { HeadInferface } from "@/types/headType"
 import { getLocalStorage } from "@/helper/asyncStorage"
 import { TransactionFormData } from '../types/TransactionFormType';
@@ -380,3 +380,70 @@ export const khatavahiReport = async (reportName: string, head_id: string) => {
 }
 
 
+
+// *************************************   SUBSCRIPTION  ***************************************//
+
+export const getSubscriptionList = async () => {
+    const token = await getLocalStorage('auth_token')
+    try {
+        const req = await Instance.get(LIST_SUBSCRIPTION, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const createSubscriptionOrder = async (id: string) => {
+    try {
+        if (!id) throw new Error("Subscription ID is missing");
+
+        const token = await getLocalStorage('auth_token');
+        if (!token) throw new Error("Authentication token is missing");
+
+        const url = `${CREATE_SUBSCRIPTION_ORDER}/create-order`;
+        console.log("Making request to:", url, "with subscriptionId:", id);
+
+        const response = await Instance.post(url, { subscriptionId: id }, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        console.log("Order Created:", response.data);
+        return response.data;
+    } catch (err: any) {
+        console.error("Error:", err);
+
+        // Check if error response exists
+        if (err.response) {
+            console.warn("Server Response:", err.response.data);
+
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2: err.response.data.message || "Something went wrong",
+                text2Style: { fontSize: 12 },
+            });
+        } else {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2: err.message || "Something went wrong",
+                text2Style: { fontSize: 12 },
+            });
+        }
+    }
+};

@@ -5,7 +5,6 @@ import {
   View,
   ImageBackground,
   KeyboardAvoidingView,
-  Platform,
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -20,6 +19,7 @@ import CustomButton from "@/app/components/customButton";
 import { CustomTextInput } from "./components/customTextInput";
 
 import { StatusBar } from "expo-status-bar";
+import RazorpayCheckout from "react-native-razorpay";
 type InputsType = {
   bank_account_no: string;
   password: string;
@@ -31,32 +31,11 @@ export default function Login() {
     bank_account_no: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
 
 
-  const fetchPaymentSheetParams = async () => {
-    const response = await fetch(`http://192.168.29.216:5000/payment-sheet`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body:JSON.stringify({
-        amount:200
-      })
-    });
-    const { paymentIntent, ephemeralKey, customer } = await response.json();
-
-    return {
-      paymentIntent,
-      ephemeralKey,
-      customer,
-    };
-  };
-
-
-
   const handleSubmit = async () => {
+
     try {
       if (!inputsValue.bank_account_no || !inputsValue.password) {
         Toast.show({
@@ -82,9 +61,8 @@ export default function Login() {
           },
           
           onHide: async() => {
-            router.push("/(tabs)/home");
-        
-            
+            // router.push("/(tabs)/home");
+            router.push("/components/premiumSubscription");
           }
           
         });
@@ -94,15 +72,12 @@ export default function Login() {
         })
     
       }
-
-     
     } catch (err: any) {
-      console.warn("Error:", err.message);
+      console.log("Error:",err);
       Toast.show({
         type: "error",
         text1: "❌ Error",
-        text2:err?.message,
-        //  err.response?.data?.message || "An error occurred",
+        text2:err.response?.data?.message|| err?.message,
         text2Style: {
           fontSize: 12,
         },
@@ -115,7 +90,8 @@ export default function Login() {
   return (
     <>
        {/* <StatusBar translucent style="dark"/> */}
-      {/* <Redirect href={"/(tabs)/home"} /> */}
+      {/* <Redirect href={"/index"} /> */}
+      {/* <Redirect href={"/components/premiumSubscription"} /> */}
       <ImageBackground
         source={require("../assets/images/background_image.jpg")}
         style={styles.backgroundImage}

@@ -15,12 +15,12 @@ interface SubscriptionPlan {
 }
 
 const Subscription = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string>('Standard');
+  const [selectedPlan, setSelectedPlan] = useState<string>('Basic');
 
   const subscriptionPlans: SubscriptionPlan[] = [
     {
       type: 'Basic',
-      price: '$2.99',
+      price: '₹343',
       features: [
         { title: 'Ads Free' },
         { title: 'Weekly Updates' },
@@ -29,7 +29,7 @@ const Subscription = () => {
     },
     {
       type: 'Premium',
-      price: '$6.99',
+      price: '₹2344',
       features: [
         { title: 'Cashbook' },
         { title: 'Appendix9' },
@@ -47,47 +47,43 @@ const Subscription = () => {
   };
 
   return (
-  <>
-    <Header title='Select Your Plan' iconName='cart-outline' key={'header'}/>
-    <View style={styles.container}>
-     {/* <Text style={styles.header}> to Stay Informed & Connected</Text> */}
-  
-      {subscriptionPlans.map((plan) => (
-        <TouchableOpacity
-          key={plan.type}
-          style={[
-            styles.planCard,
-            selectedPlan === plan.type && styles.selectedPlanCard,
-          ]}
-          onPress={() => handleSelectPlan(plan.type)}
-        >
-          <View style={styles.planHeader}>
-            <Text style={styles.planType}>{plan.type}</Text>
-            <Text style={styles.planPrice}>{plan.price}<Text style={styles.perMonth}>/month</Text></Text>
-          </View>
-          
-          <View style={styles.featuresContainer}>
-            {plan.features.map((feature, index) => (
-              <View key={index} style={styles.featureRow}>
-                <View style={styles.bullet} />
-                <Text style={styles.featureText}>{feature.title}</Text>
-              </View>
-            ))}
-          </View>
-        </TouchableOpacity>
-      ))}
+    <>
+      <Header title='Select Your Plan' iconName='cart-outline'  key={'header'}/>
+      <ScrollView style={styles.container}>
+        {subscriptionPlans.map((plan) => (
+          <TouchableOpacity
+            key={plan.type}
+            style={[
+              styles.planCard,
+              selectedPlan === plan.type && styles.selectedPlanCard,
+            ]}
+            onPress={() => handleSelectPlan(plan.type)}
+          >
+            <View style={styles.planHeader}>
+              <Text style={styles.planType}>{plan.type}</Text>
+              <Text style={styles.planPrice}>{plan.price}<Text style={styles.perMonth}> / Month</Text></Text>
+            </View>
+            
+            <View style={styles.featuresContainer}>
+              {plan.features.map((feature, index) => (
+                <View key={index} style={styles.featureRow}>
+                  <View style={styles.bullet} />
+                  <Text style={styles.featureText}>{feature.title}</Text>
+                </View>
+              ))}
+            </View>
+          </TouchableOpacity>
+        ))}
 
-      
-  <View style={{
-    flex:1,
-    justifyContent:'flex-end',
-  }}>
-  <CustomButton text='Subscribe'  key={'button'} handlePress={async()=>{
-
-}}/>
-    </View>
-  </View>
-  </>
+        <View style={styles.buttonContainer}>
+          <CustomButton 
+            text='Subscribe' 
+            key={'button'} 
+            handlePress={async()=>{}}
+          />
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -96,9 +92,9 @@ export default Subscription;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 15,
   },
-  bullet:{
+  bullet: {
     width: 6,
     height: 6,
     borderRadius: 3,
@@ -149,27 +145,19 @@ const styles = StyleSheet.create({
   },
   featuresContainer: {
     marginTop: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
   
+  },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-
+    marginBottom: 10,
   },
   featureText: {
     fontSize: 14,
-    color: '#444',
+    color: 'black',
     fontWeight: '500',
-    flex: 1,
   },
   buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
     marginBottom: 20,
   },
 });
