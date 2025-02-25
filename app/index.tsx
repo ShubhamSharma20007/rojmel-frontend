@@ -61,8 +61,10 @@ export default function Login() {
           },
           
           onHide: async() => {
-            // router.push("/(tabs)/home");
-            router.push("/components/premiumSubscription");
+            if(!response.data.data.userDetail.current_subscription_id ){
+            return  router.push("/components/premiumSubscription");
+            }
+           return router.push("/(tabs)/home");
           }
           
         });

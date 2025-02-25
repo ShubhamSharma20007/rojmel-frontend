@@ -7,7 +7,6 @@ import { createSubscriptionOrder, getSubscriptionList } from '@/helper/api-commu
 import CustomButton from './customButton';
 import Toast from 'react-native-toast-message';
 import RazorpayCheckout from 'react-native-razorpay';
-
 interface listType {
   type: string;
   price: string;
@@ -93,7 +92,7 @@ const PremiumSubscription = () => {
         image: 'https://your-app-logo.png',
         currency: 'INR',
         key: RAZORPAY_KEY,
-        amount: amount, // Convert to paise
+        amount: amount * 100, // Convert to paise
         name: 'Rojmel Store',
         prefill: {
           email: 'shubhamsharma20007@gmail.com',
@@ -104,12 +103,7 @@ const PremiumSubscription = () => {
       };
       const data = await RazorpayCheckout.open(options as any);
       if (data.razorpay_payment_id) {
-        try {
-          const res = await createSubscriptionOrder(subscriptionPlans[selectedPlan]?._id);
-          console.log('Order Created:', res);
-        } catch (err) {
-          console.error('Order Creation Failed:', err);
-        }
+     return router.push('/(tabs)/home')
       }
     } catch (error: any) {
       console.error('Payment Error:', error);
@@ -117,9 +111,9 @@ const PremiumSubscription = () => {
     }
   };
 
-
   return (
    <AndroidSafeArea>
+
  <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Back Button */}
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
