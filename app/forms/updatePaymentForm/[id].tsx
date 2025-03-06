@@ -363,7 +363,7 @@ const UpdateTransactionForm: React.FC = () => {
                   onPress={() => {
                     // Prevent changing the selection when transaction_type is "out"
                     if (formData.transaction_type.toLowerCase() === "out") {
-                      return; // Do nothing if it's "out"
+                      setIsDisabled(true)
                     }
                     handleChange("transaction_type", type.value);
                   }}
@@ -380,9 +380,8 @@ const UpdateTransactionForm: React.FC = () => {
                   selected={formData.payment_method === method.value}
                   // onPress={() => handleChange("payment_method", method.value)}
                   onPress={() => {
-                    // Prevent changing the selection when transaction_type is "out"
                     if (formData.payment_method.toLowerCase() === "cash") {
-                      return; // Do nothing if it's "out"
+                      setIsDisabled(true)
                     }
                     handleChange("payment_method", method.value);
                   }}

@@ -37,11 +37,6 @@ const TransactionForm: React.FC = () => {
     const [open, setOpen] = useState(false);
     const {customer} = useCustomerContext()
   const [items, setItems] = useState<{value:string,label:string}[]>([]);
-
-
-
-
-
   const [formData, setFormData] = useState<TransactionFormData>({
     transaction_date:'',
     head_id: '',

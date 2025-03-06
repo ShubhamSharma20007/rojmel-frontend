@@ -100,6 +100,7 @@ export default function Login() {
 
   return (
     <>
+    <Redirect href={"/forms/addPaymentForm"}/>
       <ImageBackground
         source={require("../assets/images/background_image.jpg")}
         style={styles.backgroundImage}
