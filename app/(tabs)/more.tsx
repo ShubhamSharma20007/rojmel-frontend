@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     backgroundColor: "#1976D2",
     alignItems: "center",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: "white",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
   profileInfo: {
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   businessName: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "500",
   },
   editButton: {
