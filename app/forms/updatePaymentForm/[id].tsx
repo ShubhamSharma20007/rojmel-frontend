@@ -26,6 +26,7 @@ import {
 } from "@/helper/api-communication";
 import Header from "@/app/components/header";
 import { router, useLocalSearchParams } from "expo-router";
+import { getLocalStorage } from "@/helper/asyncStorage";
 interface RadioOption {
   label: string;
   value: string;
@@ -87,7 +88,7 @@ const UpdateTransactionForm: React.FC = () => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showClearingDatePicker, setShowClearingDatePicker] = useState(false);
-
+  const [currentPlan,setCurrentPlan] = useState<string[]>([])
   const transactionTypes: RadioOption[] = [
     { label: 'આવક', value: 'IN' },
     { label: 'જાવક', value: 'OUT' },
@@ -248,6 +249,28 @@ const UpdateTransactionForm: React.FC = () => {
     }
   }, [formData.payment_method, formData.transaction_type]);
 
+  useEffect(() => {
+    (async () => {
+      const res = await getLocalStorage('yearPlan');
+      console.log(res, 12);
+      if (res!.length > 0 && !!res) {
+        const statement =res?.replace("20","")?.split("-")
+        setCurrentPlan(statement)
+      }
+    })();
+  }, []); // Runs only on mount
+
+  useEffect(() => {
+    console.log(new Date(+(`20${currentPlan[0]}`), 0, 1)) // Logs updated state value after change
+  }, [currentPlan]); // Runs when currentPlan updates
+  
+  const firstYear = currentPlan[0]?.replace(/['"]/g, '').trim(); 
+  const secondYear = currentPlan[1]?.replace(/['"]/g, '').trim(); 
+  const finalFirstYear = Number(`20${firstYear}`);
+  const finalSecondYear = Number(`20${secondYear}`);
+ 
+  console.log(finalFirstYear,finalSecondYear)
+
   return (
     <View style={styles.container}>
       <Header title="રોજમેળ સંપાદિત કરો" backPath={true} iconName="arrow-back" />
@@ -286,6 +309,8 @@ const UpdateTransactionForm: React.FC = () => {
                     ? (new Date(formData.transaction_date) as Date)
                     : new Date()
                 }
+                minimumDate={new Date(finalFirstYear, 0, 1)} 
+                maximumDate={new Date(finalSecondYear, 11, 31)} 
                 style={{
                   display: "flex",
                   justifyContent: "center",
