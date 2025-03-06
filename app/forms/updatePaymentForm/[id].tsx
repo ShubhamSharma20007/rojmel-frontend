@@ -89,14 +89,14 @@ const UpdateTransactionForm: React.FC = () => {
   const [showClearingDatePicker, setShowClearingDatePicker] = useState(false);
 
   const transactionTypes: RadioOption[] = [
-    { label: "In", value: "IN" },
-    { label: "Out", value: "OUT" },
+    { label: 'આવક', value: 'IN' },
+    { label: 'જાવક', value: 'OUT' },
   ];
 
   const paymentMethods: RadioOption[] = [
-    { label: "Cash", value: "cash" },
-    { label: "Online", value: "online" },
-    { label: "Cheque", value: "cheque" },
+    { label: 'રોકડ', value: 'cash' },
+    { label: 'ઓનલાઈન/બેંક', value: 'online' },
+    { label: 'ચેક/PFMS', value: 'cheque' },
   ];
 
   const handleChange = (
@@ -122,8 +122,8 @@ const UpdateTransactionForm: React.FC = () => {
       if (!formData[field as keyof TransactionFormData]) {
         Toast.show({
           type: "error",
-          text1: "❌ Error",
-          text2: `${label} is required`,
+          text1: "❌ ભૂલ",
+          text2: `${label} આવશ્યક છે`,
           text2Style: {
             fontSize: 12,
           },
@@ -135,8 +135,8 @@ const UpdateTransactionForm: React.FC = () => {
     if (formData.amount && isNaN(Number(formData.amount))) {
       Toast.show({
         type: "error",
-        text1: "❌ Error",
-        text2: "Amount must be a valid number",
+        text1: "❌ ભૂલ",
+        text2: "રકમ માન્ય નંબર હોવી જોઈએ",
         text2Style: {
           fontSize: 12,
         },
@@ -164,7 +164,7 @@ const UpdateTransactionForm: React.FC = () => {
         if (response?.statusCode === 201 || response?.statusCode === 200) {
           Toast.show({
             type: "success",
-            text1: "✅ Success",
+            text1: "✅ સફળતા",
             text2: response?.message,
             text2Style: {
               fontSize: 12,
@@ -177,7 +177,7 @@ const UpdateTransactionForm: React.FC = () => {
       } catch (err: any) {
         Toast.show({
           type: "error",
-          text1: "❌ Error",
+          text1: "❌ ભૂલ",
           text2:
             err.response?.data?.message || "An error occurred" || err?.message,
           text2Style: {
@@ -194,7 +194,7 @@ const UpdateTransactionForm: React.FC = () => {
       if (response?.statusCode === 201 || response?.statusCode === 200) {
         Toast.show({
           type: "success",
-          text1: "✅ Success",
+          text1: "✅ સફળતા",
           text2: response?.message,
           text2Style: {
             fontSize: 12,
@@ -211,7 +211,7 @@ const UpdateTransactionForm: React.FC = () => {
     } catch (err: any) {
       Toast.show({
         type: "error",
-        text1: "❌ Error",
+        text1: "❌ ભૂલ",
         text2:
           err.response?.data?.message || "An error occurred" || err?.message,
         text2Style: {
@@ -224,17 +224,18 @@ const UpdateTransactionForm: React.FC = () => {
   // delete the payment
   const deletePayment = async () => {
     Alert.alert(
-      "Delete Payment",
-      "Are you sure you want to delete this payment?",
+      "ચુકવણી કાઢી નાખો",
+      "શું તમે ખરેખર આ ચુકવણી કાઢી નાખવા માંગો છો?",
       [
-        { text: "cancel", onPress: () => null },
+        { text: "રદ કરો", onPress: () => null },
         {
-          text: "Ok",
+          text: "ઓકે",
           onPress: async () => await handleDelete(),
         },
       ]
     );
   };
+  
 
   useEffect(() => {
     if (
@@ -249,7 +250,7 @@ const UpdateTransactionForm: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="Update Rojmel" backPath={true} iconName="arrow-back" />
+      <Header title="રોજમેળ સંપાદિત કરો" backPath={true} iconName="arrow-back" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -275,7 +276,7 @@ const UpdateTransactionForm: React.FC = () => {
               <Text style={[styles.dateText]}>
                 {formData.transaction_date
                   ? new Date(formData.transaction_date).toLocaleDateString()
-                  : "Select Transaction Date"}
+                  : "તારીખ પસંદ કરો"}
               </Text>
             </TouchableOpacity>
             {showDatePicker && (
@@ -318,7 +319,7 @@ const UpdateTransactionForm: React.FC = () => {
                 borderColor: "#F1F4FF",
               }}
               setItems={setItems}
-              placeholder="Select a Head Name"
+              placeholder="હેડ પસંદ કરો"
               style={[
                 styles.input,
                 {
@@ -337,7 +338,7 @@ const UpdateTransactionForm: React.FC = () => {
               searchTextInputStyle={{
                 borderWidth: 0,
               }}
-              searchPlaceholder="Search for a head name"
+              searchPlaceholder="હેડ ના નામથી શોધો"
               listMode="SCROLLVIEW"
               scrollViewProps={{
                 nestedScrollEnabled: true,
@@ -349,13 +350,13 @@ const UpdateTransactionForm: React.FC = () => {
             <CustomTextInput
               value={formData["amount"].toString()}
               onChangeText={(value) => handleChange("amount", value)}
-              placeholder="Amount"
-              label="Amount"
+              placeholder="રકમ"
+              label="રકમ"
               type={"numeric"}
               disabled={isDisbale}
             />
 
-            <Text style={styles.label}>Transaction Type *</Text>
+            <Text style={styles.label}>પ્રકાર પસંદ કરો *</Text>
             <View style={styles.radioGroup}>
               {transactionTypes.map((type) => (
                 <RadioButton
@@ -373,7 +374,7 @@ const UpdateTransactionForm: React.FC = () => {
               ))}
             </View>
 
-            <Text style={styles.label}>Payment Method *</Text>
+            <Text style={styles.label}>ચુકવણી પદ્ધતિ *</Text>
             <View style={styles.radioGroup}>
               {paymentMethods.map((method) => (
                 <RadioButton
@@ -394,16 +395,16 @@ const UpdateTransactionForm: React.FC = () => {
             <CustomTextInput
               value={formData.details}
               onChangeText={(value) => handleChange("details", value)}
-              placeholder="Description"
-              label="Description"
+              placeholder="કોને ચૂકવ્યા/ગ્રાન્ટ આવેલ તેની વિગત"
+              label="કોને ચૂકવ્યા/ગ્રાન્ટ આવેલ તેની વિગત"
               type={"default"}
             />
 
             <CustomTextInput
               value={formData.cheque_number!}
               onChangeText={(value) => handleChange("cheque_number", value)}
-              placeholder="Cheque/PFMS/Voucher No."
-              label="Cheque/PFMS/Voucher No."
+              placeholder="ચેક/PFMS નંબર"
+              label="ચેક/PFMS નંબર"
               type={"numeric"}
               disabled={isDisbale}
             />
@@ -425,7 +426,7 @@ const UpdateTransactionForm: React.FC = () => {
                   ? new Date(
                       formData.cheque_pfms_clearing_date
                     ).toLocaleDateString()
-                  : "Clearing Date"}
+                  : "ચેક/PFMS ક્લીયરિંગ તારીખ"}
               </Text>
             </TouchableOpacity>
             {showClearingDatePicker && (
@@ -459,7 +460,7 @@ const UpdateTransactionForm: React.FC = () => {
                 }}
               >
                 <CustomButton
-                  text="Delete"
+                  text="કાઢી નાખો"
                   handlePress={deletePayment}
                   bg="red"
                 />
@@ -469,7 +470,7 @@ const UpdateTransactionForm: React.FC = () => {
                   flex: 1,
                 }}
               >
-                <CustomButton text="Update" handlePress={updatePayment} />
+                <CustomButton text="ફેરફાર કરો" handlePress={updatePayment} />
               </View>
             </View>
           </View>
