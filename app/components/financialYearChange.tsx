@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from './header';
 import { getFinancialYears, updateFinancialYear } from '@/helper/api-communication';
 import { Picker } from '@react-native-picker/picker';
@@ -17,7 +17,6 @@ const FinancialYearSelection = () => {
   const router = useRouter();
   const [financialYears, setFinancialYears] = useState<FinancialYear[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
-
   useEffect(() => {
     (async () => {
       try {
@@ -37,18 +36,22 @@ const FinancialYearSelection = () => {
     if (!selectedYear) return;
     try {
       const user_id = await getLocalStorage('user_id');
-      const respopnse = await updateFinancialYear(user_id!, selectedYear);
+      const response = await updateFinancialYear(user_id!, selectedYear);
       Toast.show({
         visibilityTime: 1000,
         type: "success",
         text1: "✅ Success",
-        text2: (respopnse.message),
+        text2: (response.message),
         text2Style: { fontSize: 12 },
         onHide: async () => {
           router.back();
         },
       });
       await setLocalStorage('subscription_id', selectedYear);
+      const findPlan= financialYears.find((plan:any)=>plan._id.toString() === selectedYear.toString())
+      const handleYear = findPlan?.plan_name.split(" ")[1]
+      await setLocalStorage('yearPlan',JSON.stringify(handleYear))
+   
     } catch (err: any) {
       console.log("Error:", err);
       Toast.show({
@@ -60,6 +63,8 @@ const FinancialYearSelection = () => {
     }
   };
 
+
+
   return (
     <>
       <Header title="વિત્તીય વર્ષ પસંદ કરો" iconName="arrow-back" backPath />
@@ -68,8 +73,11 @@ const FinancialYearSelection = () => {
         <View style={styles.dropdownContainer}>
           <Text style={styles.label}>વિત્તીય વર્ષ:</Text>
           <Picker
+          
             selectedValue={selectedYear}
-            onValueChange={(itemValue) => setSelectedYear(itemValue)}
+            onValueChange={(itemValue) =>{
+              setSelectedYear(itemValue)
+            }}
             style={styles.picker}
           >
             {financialYears.map((year) => (

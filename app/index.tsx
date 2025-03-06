@@ -24,6 +24,7 @@ import { CustomTextInput } from "./components/customTextInput";
 import { StatusBar } from "expo-status-bar";
 import RazorpayCheckout from "react-native-razorpay";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { getFinancialYears } from "@/helper/api-communication";
 
 export default function Login() {
   const router = useRouter();
@@ -85,6 +86,14 @@ export default function Login() {
           },
         });
         setInputsValue({ identifier: "", password: "" });
+        // update the current Plan
+        // const plan = await getFinancialYears()
+        // const { data } = plan;
+        // const findPlan= data.find((plan:any)=>plan._id.toString() === response.data.data.userDetail.current_subscription_id.toString())
+        // const handleYear = findPlan?.plan_name.split(" ")[1]
+        // await setLocalStorage('yearPlan',JSON.stringify(handleYear))
+        
+     
       }
     } catch (err: any) {
       console.log("Error:", err);

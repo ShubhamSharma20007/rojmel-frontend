@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
@@ -13,7 +13,8 @@ import { useCustomerContext } from '../context/customerContext';
 import { TransactionFormData } from '../../types/TransactionFormType';
 import { createLedger } from '@/helper/api-communication';
 import Header from '../components/header';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { getLocalStorage } from '@/helper/asyncStorage';
 interface RadioOption {
   label: string;
   value: string;
@@ -52,7 +53,7 @@ const TransactionForm: React.FC = () => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showClearingDatePicker, setShowClearingDatePicker] = useState(false);
-
+  const [currentPlan,setCurrentPlan] = useState<string[]>([])
   const transactionTypes: RadioOption[] = [
     { label: 'આવક', value: 'IN' },
     { label: 'જાવક', value: 'OUT' },
@@ -174,6 +175,27 @@ const TransactionForm: React.FC = () => {
     })
   };
 
+  useEffect(() => {
+    (async () => {
+      const res = await getLocalStorage('yearPlan');
+      console.log(res, 12);
+      if (res!.length > 0 && !!res) {
+        const statement =res?.replace("20","")?.split("-")
+        setCurrentPlan(statement)
+      }
+    })();
+  }, []); // Runs only on mount
+
+  useEffect(() => {
+    console.log(new Date(+(`20${currentPlan[0]}`), 0, 1)) // Logs updated state value after change
+  }, [currentPlan]); // Runs when currentPlan updates
+  
+  const firstYear = currentPlan[0]?.replace(/['"]/g, '').trim(); 
+  const secondYear = currentPlan[1]?.replace(/['"]/g, '').trim(); 
+  const finalFirstYear = Number(`20${firstYear}`);
+  const finalSecondYear = Number(`20${secondYear}`);
+ 
+  console.log(finalFirstYear,finalSecondYear)
   return (
     <View style={styles.container}>
     
@@ -204,6 +226,9 @@ const TransactionForm: React.FC = () => {
           {showDatePicker && (
             <DateTimePicker
               value={formData.transaction_date || new Date()}
+              minimumDate={new Date(finalFirstYear, 0, 1)} 
+              maximumDate={new Date(finalSecondYear, 11, 31)} 
+              
               style={{
                 display: 'flex',
                 justifyContent: 'center',
