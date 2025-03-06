@@ -282,7 +282,7 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 2,
+                          gap: 80,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
@@ -311,7 +311,7 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 15,
+                          gap: 16,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
@@ -339,7 +339,7 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 15,
+                          gap: 10,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>

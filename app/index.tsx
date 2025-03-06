@@ -7,14 +7,16 @@ import {
   Image,  // Import Image
   KeyboardAvoidingView,
   Alert,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Link, Redirect, router } from "expo-router";
+import { Link, Redirect, router, useFocusEffect } from "expo-router";
 import Toast from "react-native-toast-message";
 import { Instance } from "@/lib/instance";
 import { LOGIN } from "@/constant/apis";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { removeLocalStorage, setLocalStorage, getLocalStorage } from "@/helper/asyncStorage";
 import CustomButton from "@/app/components/customButton";
 import { CustomTextInput } from "./components/customTextInput";
@@ -29,6 +31,26 @@ export default function Login() {
     identifier: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert("Exit App", "Are you sure you want to exit?", [
+          { text: "Cancel", style: "cancel" },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true; // Prevent default back action
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [])
+  );
 
   const handleSubmit = async () => {
     try {
@@ -107,17 +129,20 @@ export default function Login() {
               type={"default"}
             />
 
-            <CustomTextInput
-              value={inputsValue.password}
-              onChangeText={(text) =>
-                setInputsValue((prev) => ({ ...prev, password: text }))
-              }
-              placeholder="Password"
-              label="Password"
-              type={"default"}
-              secureTextEntry={true}
-            />
-
+            {/* Password Input with Eye Icon */}
+              <CustomTextInput
+                value={inputsValue.password}
+                onChangeText={(text) =>
+                  setInputsValue((prev) => ({ ...prev, password: text }))
+                }
+                placeholder="Password"
+                label="Password"
+                secureTextEntry={!showPassword}
+                type="default"
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="#666" />
+              </TouchableOpacity>
             <View>
               <Link
                 href="/resetPassword"
@@ -147,6 +172,12 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    bottom :54
+  },
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
