@@ -238,8 +238,9 @@ const TransactionForm: React.FC = () => {
               display="default"
               onChange={(event, selectedDate) => {
                 setShowDatePicker(false);
-                if (selectedDate) {
-                  handleChange('transaction_date', selectedDate);
+                if (event.type === "set" && selectedDate) {
+                  // Only update the date if "OK" is pressed
+                  handleChange("transaction_date", selectedDate);
                 }
               }}
             />
@@ -363,18 +364,19 @@ const TransactionForm: React.FC = () => {
             </Text>
           </TouchableOpacity>
           {showClearingDatePicker && (
-            <DateTimePicker
-              value={formData.cheque_pfms_clearing_date || new Date()}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowClearingDatePicker(false);
-                if (selectedDate) {
-                  handleChange('cheque_pfms_clearing_date', selectedDate);
-                }
-              }}
-            />
-          )}
+          <DateTimePicker
+            value={formData.cheque_pfms_clearing_date || new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowClearingDatePicker(false);
+              if (event.type === "set" && selectedDate) {
+                // Only update the date if "OK" is pressed
+                handleChange("cheque_pfms_clearing_date", selectedDate);
+              }
+            }}
+          />
+        )}
         <View style={styles.bottomButtons}>
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}

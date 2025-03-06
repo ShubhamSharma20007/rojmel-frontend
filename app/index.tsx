@@ -87,11 +87,11 @@ export default function Login() {
         });
         setInputsValue({ identifier: "", password: "" });
         // update the current Plan
-        // const plan = await getFinancialYears()
-        // const { data } = plan;
-        // const findPlan= data.find((plan:any)=>plan._id.toString() === response.data.data.userDetail.current_subscription_id.toString())
-        // const handleYear = findPlan?.plan_name.split(" ")[1]
-        // await setLocalStorage('yearPlan',JSON.stringify(handleYear))
+        const plan = await getFinancialYears()
+        const { data } = plan;
+        const findPlan= data.find((plan:any)=>plan._id.toString() === response.data.data.userDetail.current_subscription_id.toString())
+        const handleYear = findPlan?.plan_name.split(" ")[1]
+        await setLocalStorage('yearPlan',JSON.stringify(handleYear))
         
      
       }
@@ -109,7 +109,7 @@ export default function Login() {
 
   return (
     <>
-    <Redirect href={"/forms/addPaymentForm"}/>
+    {/* <Redirect href={"/forms/addPaymentForm"}/> */}
       <ImageBackground
         source={require("../assets/images/background_image.jpg")}
         style={styles.backgroundImage}

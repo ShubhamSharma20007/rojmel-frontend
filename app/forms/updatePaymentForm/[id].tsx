@@ -294,7 +294,8 @@ const UpdateTransactionForm: React.FC = () => {
                 display="default"
                 onChange={(event, selectedDate) => {
                   setShowDatePicker(false);
-                  if (selectedDate) {
+                  if (event.type === "set" && selectedDate) {
+                    // Only update the date if "OK" is pressed
                     handleChange("transaction_date", selectedDate);
                   }
                 }}
