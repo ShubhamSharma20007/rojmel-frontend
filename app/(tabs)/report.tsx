@@ -205,7 +205,7 @@ const Report = () => {
     <View style={[styles.container]}>
       {/* Header */}
     <StatusBar translucent style="light"/>
-      <Header iconName="document" title="Report" key={'pay'} />
+      <Header iconName="" title="Report" key={'pay'} />
 
       {/*  List of Entries */}
       <View style={{ flex: 1, padding: 10 }}>
@@ -297,7 +297,7 @@ const Report = () => {
           alignContent: 'center',
           fontSize: 14,
         }}>
-          {description}
+          
         </Text>
         <View style={{
           width: '100%',
@@ -334,9 +334,7 @@ const Report = () => {
         >
           <Text style={styles.addButtonText}>DOWNLOAD REPORT</Text>
         </TouchableOpacity> */}
-        <CustomButton handlePress={handleDownloadReport} text="DOWNLOAD REPORT" key='download_report' customStyle={{
-          width: '100%'
-        }} />
+        <CustomButton handlePress={handleDownloadReport} text="DOWNLOAD REPORT" key='download_report' />
       </View>
     </View>
   );

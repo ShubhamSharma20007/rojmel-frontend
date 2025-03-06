@@ -10,10 +10,10 @@ import Report from "./report";
 export default function TabLayout() {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
-    { key: 'rojmel', title: 'Rojmel', focusedIcon: 'store',unfocusedIcon: 'store-outline' },
-    { key: 'report', title: 'Report', focusedIcon: 'book', unfocusedIcon: 'book-outline' },
-    { key: 'more', title: 'More', focusedIcon: 'more', unfocusedIcon: 'more' },
+    { key: 'home', title: 'હેડ', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
+    { key: 'rojmel', title: 'રોજમેળ', focusedIcon: 'store',unfocusedIcon: 'store-outline' },
+    { key: 'report', title: 'રિપોર્ટ્સ', focusedIcon: 'book', unfocusedIcon: 'book-outline' },
+    { key: 'more', title: 'વધુ', focusedIcon: 'more', unfocusedIcon: 'more' },
   ]);
   const renderScene = BottomNavigation.SceneMap({
     home: Home,

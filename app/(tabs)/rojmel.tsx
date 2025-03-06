@@ -86,7 +86,7 @@ const Rojmel = () => {
     <View style={[styles.container]}>
       {/* Header */}
 
-      <Header iconName="document" title="Rojmel" key={'pay'} />
+      <Header iconName="" title="Rojmel" key={'pay'} />
 
       {/* Balance Cards */}
       <View style={styles.balanceContainer}>

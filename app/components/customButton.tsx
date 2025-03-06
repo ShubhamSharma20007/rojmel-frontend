@@ -44,17 +44,16 @@ const CustomButton: React.FC<CustomButtonProps> = ({ text, handlePress,bg='#1a23
 const styles = StyleSheet.create({
   
   button: {
-    height: 50,
-    justifyContent: "center",
+    backgroundColor: "#1a237e",
+    width: '100%',
+    padding: 16,
+    borderRadius: 8,
     alignItems: "center",
-    marginTop: 24,
-    borderRadius: 10,
   },
   textButton: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 15,
   },
 });
 

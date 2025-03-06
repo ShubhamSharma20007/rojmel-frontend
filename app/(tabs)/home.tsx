@@ -14,7 +14,7 @@ import {
   Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter ,usePathname} from "expo-router";
 import { deleteHead, getHeads, updateHeads } from "@/helper/api-communication";
 import { handleSplitName } from "@/helper/splitName";
 import { currency } from "@/helper/currency";
@@ -33,6 +33,7 @@ interface EditedValues {
 
 const Home = () => {
   const router = useRouter();
+  const pathname = usePathname()
   const { customer, setCustomers } = useCustomerContext();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [filterData,setFilterData] = useState<any>([]);
@@ -63,6 +64,7 @@ const Home = () => {
   }, [customer, searchQuery, isSorted]);
 
   useEffect(() => {
+  
     (async () => {
       const getHeadsData = await getHeads();
       // if(!getHeadsData){
@@ -73,6 +75,9 @@ const Home = () => {
         setCustomers(getHeadsData?.data);
       }
     })();
+    return ()=>{
+      setCustomers([])
+    }
   }, []);
  
 
@@ -84,6 +89,11 @@ const Home = () => {
       opening_balance_cash: customer.opening_balance_cash.toString(),
       opening_balance_bank: customer.opening_balance_bank.toString(),
     });
+  }
+
+  function handleCancel(id:string){
+    setEditingId(null);
+   Keyboard.dismiss()
   }
   const handleSubmit = async (id: string) => {
     console.log("-----------------------------------");
@@ -115,13 +125,13 @@ const Home = () => {
 
 
     const handleDeleteHead =async(id:string)=>{
-      Alert.alert('Delete Head', 'Are you sure you want to delete this head?',[
+      Alert.alert('હેડ કાઢી નાખો', 'શું તમે હેડ ડિલીટ કરવા માટે ખાતરી કરો છો? જો હા, તો તમામ હેડ સંબંધિત રોજમેળ એન્ટ્રી આપમેળે દૂર કરવામાં આવશે ?', [
         {
-          text: 'Cancel',
+          text: 'રદ કરો',
           style: 'cancel',
         },
         {
-          text: 'Delete',
+          text: 'કાઢી નાખો',
           onPress: async () =>{
         console.log('----------------delete -------------------')
       const result = await deleteHead(id);
@@ -170,7 +180,7 @@ const Home = () => {
             <Text style={styles.storeText}>Rojmel Store</Text>
           </View>
         </View> */}
-          <Header title='Rojmel Store' iconName='book-outline' />
+          <Header title='હેડ' iconName='' />
 
         {/* Rest of your existing code */}
        <View style={styles.balanceContainer}>
@@ -204,7 +214,7 @@ const Home = () => {
               </Text>
               <Text style={[styles.balanceLabel,{
                 textAlign:'center'
-              }]}>Total Bank Amount</Text>
+              }]}>આ વર્ષ ની બેક ની ઓપનીંગ બેલેન્સ</Text>
             </View>
             <View
               style={{
@@ -227,7 +237,7 @@ const Home = () => {
               </Text>
               <Text style={[styles.balanceLabel,{
                    textAlign: "center",
-              }]}>Total Cash Amount</Text>
+              }]}>આ વર્ષ ની રોકડ ની ઓપનીંગ બેલેન્સ</Text>
             </View>
           </View>
         </View>
@@ -236,7 +246,7 @@ const Home = () => {
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#666" />
           <TextInput
-            placeholder="Search By Head Name..."
+            placeholder="શોધો..."
             style={[styles.searchInput,{height:'100%'}]}
             onChangeText={handleFilterHead}
             value={searchQuery}
@@ -252,9 +262,7 @@ const Home = () => {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{
-          flex:1
-        }}>
+        <ScrollView >
          {
           filterData.length > 0 ?(
             filterData.map((customer:any, index:number) =>
@@ -278,7 +286,7 @@ const Home = () => {
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
-                          Head Name :{" "}
+                        હેડ નું નામ :{" "}
                         </Text>
                         <TextInput
                           style={{
@@ -307,7 +315,7 @@ const Home = () => {
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
-                          Bank Amt :{" "}
+                        બેંક ની ઓપનીંગ બેલેન્સ :{" "}
                         </Text>
                         <TextInput
                           style={{
@@ -335,7 +343,7 @@ const Home = () => {
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
-                          Cash Amt :{" "}
+                        રોકડ ની ઓપનીંગ બેલેન્સ :{" "}
                         </Text>
                         <TextInput
                           style={{
@@ -356,7 +364,7 @@ const Home = () => {
                       </View>
                     </View>
                   </View>
-                  <View style={[styles.amountContainer, { flex: 1}]}>
+                  <View style={[styles.amountContainer, { flex:1, gap:5}]}>
                     <TouchableOpacity
                       onPress={() => {
                         handleSubmit(customer._id);
@@ -364,10 +372,22 @@ const Home = () => {
                       style={styles.requestButton}
                     >
                      
-                      <Text style={styles.requestText}>SUBMIT</Text>
+                      <Text style={styles.requestText}>સબમિટ કરો</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleCancel(customer._id);
+                      }}
+                      style={styles.deleteButton}
+                    >
+                     
+                      <Text style={[styles.requestText,{color:'white'}]}>રદ કરો</Text>
                     </TouchableOpacity>
                     
+                    
                   </View>
+                  
+
                 </View>
               ) : (
                 <>
@@ -387,7 +407,7 @@ const Home = () => {
                         </Text>
                         {customer.updatedAt && (
                           <Text style={[styles.dueDate]}>
-                            Bank Amount :{" "}
+                            બેંક ની ઓપનીંગ બેલેન્સ :{" "}
                             <Text style={{ fontWeight: "500" }}>
                               {currency(customer.opening_balance_bank)}
                             </Text>
@@ -395,7 +415,7 @@ const Home = () => {
                         )}
                         {customer.updatedAt && (
                           <Text style={styles.dueDate}>
-                            Cash Amount :{" "}
+                            રોકડ ની ઓપનીંગ બેલેન્સ :{" "}
                             <Text style={{ fontWeight: "500" }}>
                               {currency(customer.opening_balance_cash)}
                             </Text>
@@ -411,7 +431,7 @@ const Home = () => {
                         style={styles.requestButton}
                       >
                         
-                        <Text style={styles.requestText}>UPDATE</Text>
+                        <Text style={[styles.requestText]}>ફેરફાર કરો</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                       onPress={() => {
@@ -419,7 +439,7 @@ const Home = () => {
                       }}
                       style={styles.deleteButton}
                     >
-                      <Text style={[styles.requestText,{color:'white'}]}>DELETE</Text>
+                      <Text style={[styles.requestText,{color:'white'}]}>કાઢી નાખો</Text>
                     </TouchableOpacity>
                     </View>
                   </View>
@@ -447,7 +467,7 @@ const Home = () => {
           style={styles.addButton}
           onPress={() => router.push("/forms/personAddForm")}
         >
-          <Text style={styles.addButtonText}>ADD HEAD</Text>
+          <Text style={styles.addButtonText}>હેડ બનાવો</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -681,9 +701,8 @@ const styles = StyleSheet.create({
     marginTop:5,
     justifyContent:'center',
     flexDirection: "row",
-    alignItems: "center",
     color:'white',
-
+    width:70
 
   },
   requestButton: {
@@ -692,14 +711,13 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     flexDirection: "row",
-    alignItems: "center",
-   
+    width : 70
   },
   requestText: {
     color: "#1976D2",
     fontSize: 12,
-    
-    
+    textAlign: 'center',
+    width:'100%'
   },
   addButton: {
     backgroundColor: "#1a237e",

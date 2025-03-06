@@ -44,3 +44,15 @@ export const DOWNLOAD_REPORT = `${API_ROUTE}/${REPORT}/generate`  // it will tak
 const SUBSCRIPTION = 'subscriptions'
 export const LIST_SUBSCRIPTION = `${API_ROUTE}/${SUBSCRIPTION}`
 export const CREATE_SUBSCRIPTION_ORDER = `${API_ROUTE}/${SUBSCRIPTION}/create-order`
+export const PURCHASED_HISTORY = `${API_ROUTE}/${SUBSCRIPTION}/history`
+
+// Static Pages
+const CMS = 'cms'
+export const ABOUT_US = `${API_ROUTE}/${CMS}/about-us`
+export const PRIVACY_POLICY = `${API_ROUTE}/${CMS}/privacy-policy`
+
+// Profile section
+const PROFILE = 'profile' 
+export const USER_DETAILS = `${API_ROUTE}/${PROFILE}`
+export const FINANCIAL_YEAR_LISTING = `${API_ROUTE}/${PROFILE}/financial-listing`
+export const FINANCIAL_YEAR = `${API_ROUTE}/${PROFILE}/financial-year`

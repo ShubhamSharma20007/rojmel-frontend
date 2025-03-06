@@ -49,6 +49,7 @@ export default function Layout() {
         >
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="/components/subscription"/>
+          <Stack.Screen name="/components/updateUserProfile"/>
           <Stack.Screen name="/components/premiumSubscription"/>
           <Stack.Screen name="index" />
           <Stack.Screen name="register" />

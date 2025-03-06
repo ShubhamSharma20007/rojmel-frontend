@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from "react-native";
 import {
@@ -12,81 +11,62 @@ import {
   MaterialCommunityIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
+import Header from "../components/header";
+import { useRouter} from "expo-router";
+import {getLocalStorage} from "../../helper/asyncStorage"
+import {handleSplitName} from "../../helper/splitName"
+
 
 const More = () => {
+  const router = useRouter();
+  const [userDetails, getUserDetails] = useState("")
+  function handleRedirection(pathname: any) {
+    return router.push(pathname);
+  }
+
+  function handleLogout() {
+    // removeLocalStorage('');
+    router.push("/"); // Redirect to login page
+  }
+
+  useEffect(()=>{
+    (async()=>{
+      const userDetails = await getLocalStorage('school_name')
+      getUserDetails(userDetails!);
+    })
+() },[])
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Ionicons name="book-outline" size={24} color="white" />
-          <Text style={styles.headerTitle}>My Business</Text>
-        </View>
-        <Ionicons name="pencil" size={24} color="white" />
-      </View>
+      <Header title="Profile" key={"profile"} iconName="" />
 
       <ScrollView>
         <View style={styles.profileSection}>
           <View style={styles.profileHeader}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>MB</Text>
+              <Text style={styles.avatarText}>{handleSplitName(userDetails)}</Text>
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.businessName}>My Business</Text>
-              <TouchableOpacity style={styles.editButton}>
+              <Text style={styles.businessName}>{userDetails}</Text>
+              <TouchableOpacity style={styles.editButton}
+              onPress={()=>router.push('/components/updateUserProfile')}
+              >
                 <Text style={styles.editButtonText}>Edit</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <View style={styles.strengthSection}>
-            <Text style={styles.strengthText}>
-              Profile strength : <Text style={styles.weakText}>Weak</Text>
-            </Text>
-            <Text style={styles.percentageText}>0%</Text>
-          </View>
-
-          <TouchableOpacity style={styles.businessCard}>
-            <Text style={styles.cardTitle}>
-              Fill missing details for a FREE
-            </Text>
-            <Text style={styles.cardSubtitle}>Business Card</Text>
-            <TouchableOpacity style={styles.proceedButton}>
-              <Text style={styles.proceedText}>PROCEED</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-          <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.actionItem}>
-              <View style={[styles.actionIcon, { backgroundColor: "#E3F2FD" }]}>
-                <MaterialCommunityIcons
-                  name="currency-inr"
-                  size={24}
-                  color="#1976D2"
-                />
-              </View>
-              <Text style={styles.actionText}>Cashbook</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionItem}>
-              <View style={[styles.actionIcon, { backgroundColor: "#FFF8E1" }]}>
-                <FontAwesome5 name="user-plus" size={20} color="#FFA000" />
-              </View>
-              <Text style={styles.actionText}>Staff</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionItem}>
-              <View style={[styles.actionIcon, { backgroundColor: "#FFF3E0" }]}>
-                <FontAwesome5 name="calendar-alt" size={20} color="#F57C00" />
-              </View>
-              <Text style={styles.actionText}>Collection</Text>
-            </TouchableOpacity>
-          </View>
-
           <View style={styles.menuItems}>
             {[
-              { icon: "settings", title: "Settings" },
-              { icon: "help-circle", title: "Help & Support" },
-              { icon: "information-circle", title: "About Us" },
+              { icon: "card", title: "Subscription Plans", path: "/components/subscription" },
+              { icon: "card", title: "Financial Year", path: "/components/financialYearChange" },
+              { icon: "receipt", title: "Purchase History", path: "/components/purchaseHistory" },
+              { icon: "shield-checkmark", title: "Privacy & Policy", path: "/components/privacyPolicy" },
+              { icon: "information-circle", title: "About Us", path: "/components/aboutUs" },
+              { icon: "headset", title: "Help & Support", path: "/components/helpAndSupport" },
+              { icon: "help-circle", title: "How to use ?", path: "https://www.youtube.com/watch?v=veyoAuaw_8w" },
             ].map((item: any, index) => (
-              <TouchableOpacity key={index} style={styles.menuItem}>
+              <TouchableOpacity key={index} style={styles.menuItem} onPress={() => handleRedirection(item.path)}>
                 <View style={styles.menuLeft}>
                   <Ionicons name={item.icon} size={24} color="#1976D2" />
                   <Text style={styles.menuText}>{item.title}</Text>
@@ -94,6 +74,13 @@ const More = () => {
                 <Ionicons name="chevron-forward" size={24} color="#666" />
               </TouchableOpacity>
             ))}
+
+            {/* Logout Button */}
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={24} color="red" />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       </ScrollView>
@@ -105,25 +92,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    paddingTop: 40,
-    backgroundColor: "#1a237e",
-    paddingVertical: 20,
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  headerTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "500",
   },
   profileSection: {
     padding: 16,
@@ -167,72 +135,6 @@ const styles = StyleSheet.create({
   editButtonText: {
     color: "#1976D2",
   },
-  strengthSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  strengthText: {
-    fontSize: 16,
-  },
-  weakText: {
-    color: "red",
-  },
-  percentageText: {
-    color: "red",
-  },
-  businessCard: {
-    backgroundColor: "#1976D2",
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 24,
-  },
-  cardTitle: {
-    color: "white",
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  cardSubtitle: {
-    color: "white",
-    fontSize: 18,
-    marginBottom: 16,
-  },
-  proceedButton: {
-    backgroundColor: "white",
-    alignSelf: "flex-start",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  proceedText: {
-    color: "#1976D2",
-    fontWeight: "500",
-  },
-  quickActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 24,
-  },
-  actionItem: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 8,
-    elevation: 2,
-    marginHorizontal: 4,
-  },
-  actionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-  actionText: {
-    fontSize: 13,
-  },
   menuItems: {
     gap: 16,
   },
@@ -251,6 +153,23 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 16,
+  },
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    paddingVertical: 12,
+    backgroundColor: "#fff5f5",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ffcccc",
+  },
+  logoutText: {
+    fontSize: 16,
+    color: "red",
+    fontWeight: "bold",
+    marginLeft: 8,
   },
 });
 

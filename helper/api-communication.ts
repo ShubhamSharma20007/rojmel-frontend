@@ -1,9 +1,11 @@
 import { Instance } from "@/lib/instance";
 import Toast from "react-native-toast-message";
-import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT, LIST_SUBSCRIPTION, CREATE_SUBSCRIPTION_ORDER } from "@/constant/apis";
+import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT, LIST_SUBSCRIPTION, CREATE_SUBSCRIPTION_ORDER, ABOUT_US, PRIVACY_POLICY, PURCHASED_HISTORY, USER_DETAILS, FINANCIAL_YEAR_LISTING, FINANCIAL_YEAR } from "@/constant/apis";
 import { HeadInferface } from "@/types/headType"
 import { getLocalStorage } from "@/helper/asyncStorage"
 import { TransactionFormData } from '../types/TransactionFormType';
+import PurchaseHistory from "@/app/components/purchaseHistory";
+
 
 //  Forget Password
 export const forgetPasswordApi = async (email: string) => {
@@ -385,6 +387,7 @@ export const khatavahiReport = async (reportName: string, head_id: string) => {
 
 export const getSubscriptionList = async () => {
     const token = await getLocalStorage('auth_token')
+    console.log(token,12345678)
     try {
         const req = await Instance.get(LIST_SUBSCRIPTION, {
             headers: {
@@ -393,7 +396,7 @@ export const getSubscriptionList = async () => {
         })
         return req.data
     } catch (err: any) {
-        console.warn("Error:", err.message);
+        console.warn("Error here:", err.message);
         if (err.response) {
             Toast.show({
                 type: "error",
@@ -416,7 +419,7 @@ export const createSubscriptionOrder = async (id: string) => {
         const token = await getLocalStorage('auth_token');
         if (!token) throw new Error("Authentication token is missing");
 
-        const url = `${CREATE_SUBSCRIPTION_ORDER}/create-order`;
+        const url = CREATE_SUBSCRIPTION_ORDER;
         console.log("Making request to:", url, "with subscriptionId:", id);
 
         const response = await Instance.post(url, { subscriptionId: id }, {
@@ -448,3 +451,201 @@ export const createSubscriptionOrder = async (id: string) => {
         }
     }
 };
+
+// export const paymentAuthorization = async (paymentId: string, amount: string | number) => {
+//     const token = await getLocalStorage('auth_token')
+//     try {
+//         const req = await Instance.post(PAYMENT_AUTH,{
+//             payment_id:paymentId,
+//             amount
+//         }, {
+//             headers: {
+//                 'Authorization': `Bearer ${token}`
+//             },
+//         },)
+//         return true
+//     } catch (err: any) {
+//         console.warn("Error:", err.message);
+//         if (err.response) {
+//             Toast.show({
+//                 type: "error",
+//                 text1: "❌ Error",
+//                 text2Style: {
+//                     fontSize: 12,
+//                 },
+//                 text2: err.response.data.message,
+//             });
+//         }
+
+//     }
+// }
+
+export const getPurchaseHistory = async () => {
+    const token = await getLocalStorage('auth_token')
+    try {
+        const req = await Instance.get(PURCHASED_HISTORY, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const getAboutUs = async () => {
+    try {
+        const req = await Instance.get(ABOUT_US)
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const getPrivacyPolicy = async () => {
+    try {
+        const req = await Instance.get(PRIVACY_POLICY)
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const getUserDetails = async () => {
+    const token = await getLocalStorage('auth_token')
+    try {
+        const req = await Instance.get(USER_DETAILS, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const updateUserDetails = async (id: string, data: any) => {
+
+    const token = await getLocalStorage('auth_token')
+
+    try {
+        const req = await Instance.put(`${USER_DETAILS}/${id}`,data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        return req?.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        console.log(err.message,456)
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+    }
+}
+
+export const getFinancialYears = async () => {
+    const token = await getLocalStorage('auth_token')
+    try {
+        const req = await Instance.get(FINANCIAL_YEAR_LISTING, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const updateFinancialYear = async (id: string, data: any) => {
+    const token = await getLocalStorage('auth_token');
+
+    try {
+        const req = await Instance.put(`${FINANCIAL_YEAR}/${id}`, { 
+            current_subscription_id: data 
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        return req?.data;
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: { fontSize: 12 },
+                text2: err.response?.data?.message || "Something went wrong",
+            });
+        }
+    }
+};
+

@@ -1,87 +1,151 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomButton from './customButton';
 import Header from './header';
-
-interface PlanFeature {
-  title: string;
-}
+import { router } from 'expo-router';
+import { getSubscriptionList, createSubscriptionOrder } from '@/helper/api-communication';
+import { currency } from '@/helper/currency';
+import RazorpayCheckout from 'react-native-razorpay';
+import { getLocalStorage } from '@/helper/asyncStorage';
 
 interface SubscriptionPlan {
+  _id: string;
+  plan_name: string;
   type: string;
-  price: string;
-  features: PlanFeature[];
-  isSelected?: boolean;
+  amount: number;
+  isPurchased: boolean;
 }
 
+interface plan {
+  _id : string;
+}
+
+const reports = [
+  { title: 'કેશબુક' },
+  { title: 'પરિશિષ્ટ-૯' },
+  { title: 'પરિશિષ્ટ-૧૦' },
+  { title: 'ખાતાવહી' },
+  { title: 'બિલ રજિસ્ટર' },
+  { title: 'ગ્રાન્ટ રજિસ્ટર' },
+  { title: 'ચેક રજિસ્ટર' },
+];
+
 const Subscription = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string>('Basic');
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlan[]>([]);
 
-  const subscriptionPlans: SubscriptionPlan[] = [
-    {
-      type: 'Basic',
-      price: '₹343',
-      features: [
-        { title: 'Ads Free' },
-        { title: 'Weekly Updates' },
-        { title: 'Enteries' },
-      ],
-    },
-    {
-      type: 'Premium',
-      price: '₹2344',
-      features: [
-        { title: 'Cashbook' },
-        { title: 'Appendix9' },
-        { title: 'Appendix10' },
-        { title: 'Khatavahi' },
-        { title: 'Billregister' },
-        { title: 'Grantregister' },
-        { title: 'Chequeregister' },
-      ],
-    },
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        const storedSubscriptionId = await getLocalStorage('subscription_id');
+        console.log("Stored Subscription ID:", storedSubscriptionId);
+        
+        if (!storedSubscriptionId) {
+          console.warn("No subscription ID found in local storage.");
+          return;
+        }
+        setSubscriptionId(storedSubscriptionId);
+  
+        const subscriptionList = await getSubscriptionList();
+        const { data } = subscriptionList;
+  
+        if (data && data.length > 0) {
+          let matchedPlan = data.find((plan: any) => plan._id === storedSubscriptionId);
+          let purchasedPlan = data.find((plan: any) => plan.isPurchased);
+          let sortedPlans = [...data];
+  
+          if (matchedPlan) {
+            setSelectedPlan(matchedPlan._id);
+            sortedPlans = [matchedPlan, ...data.filter((plan: any) => plan._id !== matchedPlan._id)];
+          } else if (purchasedPlan) {
+            setSelectedPlan(purchasedPlan._id);
+            sortedPlans = [purchasedPlan, ...data.filter((plan: any) => plan._id !== purchasedPlan._id)];
+          } else {
+            // Default to the first available plan if no match found
+            setSelectedPlan(data[0]._id);
+          }
+  
+          setSubscriptionPlans(sortedPlans);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+  
+  
 
-  const handleSelectPlan = (planType: string) => {
-    setSelectedPlan(planType);
+  const RAZORPAY_KEY = 'rzp_test_GLComtpgG1StCu';
+
+  const handlePayment = async (planId: string) => {
+    try {
+      const userId = await getLocalStorage('user_id');
+      const orderCreate = await createSubscriptionOrder(planId);
+      const options = {
+        description: 'Payment for services',
+        image: 'https://your-app-logo.png',
+        currency: 'INR',
+        key: RAZORPAY_KEY,
+        amount: orderCreate.data.amount,
+        name: 'Rojmel',
+        order_id: orderCreate.data.orderId,
+        notes: {
+          user_id: userId,
+          subscriptionId: planId,
+        },
+        theme: { color: '#1a237e' },
+      };
+
+      const data = await RazorpayCheckout.open(options as any);
+      if (data.razorpay_payment_id) {
+        return router.push('/(tabs)/home');
+      }
+    } catch (error: any) {
+      console.error('Payment Error:', error);
+    }
   };
 
   return (
     <>
-      <Header title='Select Your Plan' iconName='cart-outline'  key={'header'}/>
+      <Header title="યોજનાઓ" iconName="arrow-back" backPath />
+
       <ScrollView style={styles.container}>
         {subscriptionPlans.map((plan) => (
           <TouchableOpacity
-            key={plan.type}
+            key={plan._id}
             style={[
               styles.planCard,
-              selectedPlan === plan.type && styles.selectedPlanCard,
+              selectedPlan === plan._id && styles.selectedPlanCard,
             ]}
-            onPress={() => handleSelectPlan(plan.type)}
+            onPress={() => setSelectedPlan(plan._id)}
+            disabled={plan.isPurchased}
           >
+            {plan.isPurchased && (
+              <View style={styles.selectedTag}>
+                <Text style={styles.selectedText}>ખરીદેલ યોજના</Text>
+              </View>
+            )}
+
             <View style={styles.planHeader}>
-              <Text style={styles.planType}>{plan.type}</Text>
-              <Text style={styles.planPrice}>{plan.price}<Text style={styles.perMonth}> / Month</Text></Text>
+              <Text style={styles.planType}>{plan.plan_name}</Text>
+              <Text style={styles.planPrice}>{currency(plan.amount)}</Text>
             </View>
-            
-            <View style={styles.featuresContainer}>
-              {plan.features.map((feature, index) => (
-                <View key={index} style={styles.featureRow}>
-                  <View style={styles.bullet} />
-                  <Text style={styles.featureText}>{feature.title}</Text>
+
+            {!plan.isPurchased && (
+              <>
+                <View>
+                  {reports.map((report, index) => (
+                    <Text key={index} style={styles.reportTitle}>
+                      • {report.title}
+                    </Text>
+                  ))}
                 </View>
-              ))}
-            </View>
+                <CustomButton text="ખરીદી કરો" handlePress={() => handlePayment(plan._id)} />
+              </>
+            )}
           </TouchableOpacity>
         ))}
-
-        <View style={styles.buttonContainer}>
-          <CustomButton 
-            text='Subscribe' 
-            key={'button'} 
-            handlePress={async()=>{}}
-          />
-        </View>
       </ScrollView>
     </>
   );
@@ -92,30 +156,20 @@ export default Subscription;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-  },
-  bullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#1a237e',
-    marginRight: 8,
+    padding: 10,
   },
   planCard: {
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     backgroundColor: '#fff',
-    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    position: 'relative',
   },
   selectedPlanCard: {
     borderColor: '#1a237e',
@@ -123,41 +177,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5ff',
   },
   planHeader: {
-    marginBottom: 16,
+    marginBottom: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
-    paddingBottom: 12,
+    paddingBottom: 8,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   planType: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: '600',
     color: '#1a237e',
   },
   planPrice: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
   },
-  perMonth: {
+  reportTitle: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
   },
-  featuresContainer: {
-    marginTop: 16,
-  
+  selectedTag: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#1a237e',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
   },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  featureText: {
-    fontSize: 14,
-    color: 'black',
-    fontWeight: '500',
-  },
-  buttonContainer: {
-    marginBottom: 20,
+  selectedText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });

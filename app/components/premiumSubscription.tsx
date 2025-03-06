@@ -3,14 +3,16 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, SafeAreaView, ScrollVi
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { AndroidSafeArea } from '@/helper/AndroidSafeArea';
-import { createSubscriptionOrder, getSubscriptionList } from '@/helper/api-communication';
+import { createSubscriptionOrder, getSubscriptionList} from '@/helper/api-communication';
 import CustomButton from './customButton';
 import Toast from 'react-native-toast-message';
 import RazorpayCheckout from 'react-native-razorpay';
+import { getLocalStorage } from '@/helper/asyncStorage';
 interface listType {
   type: string;
   price: string;
   features: PlanFeature[];
+  reports: PlanFeature[];
   isSelected?: boolean;
 }
 
@@ -23,30 +25,55 @@ const ReportLists: listType[] = [
     type: 'Basic',
     price: '₹343',
     features: [
-      { title: 'Enteries' },
+      { title: 'Add Heads' },
+      { title: 'Create Payments' },
+      { title: 'Download Reports' },
     ],
+    reports : [
+      { title: 'Cashbook Report' },
+      { title: 'Appendix9 Report' },
+      { title: 'Appendix10 Report' },
+      { title: 'Khatavahi Report' },
+      { title: 'Billregister Report' },
+      { title: 'Grantregister Report' },
+      { title: 'Chequeregister Report' },
+    ]
   },
   {
     type: 'Basic',
     price: '₹343',
     features: [
-      { title: 'Ads Free' },
-      { title: 'Weekly Updates' },
-      { title: 'Enteries' },
+      { title: 'Add Heads' },
+      { title: 'Create Payments' },
+      { title: 'Download Reports' },
     ],
+    reports : [
+      { title: 'Cashbook Report' },
+      { title: 'Appendix9 Report' },
+      { title: 'Appendix10 Report' },
+      { title: 'Khatavahi Report' },
+      { title: 'Billregister Report' },
+      { title: 'Grantregister Report' },
+      { title: 'Chequeregister Report' },
+    ]
   },
   {
     type: 'Premium',
     price: '₹2344',
     features: [
-      { title: 'Cashbook' },
-      { title: 'Appendix9' },
-      { title: 'Appendix10' },
-      { title: 'Khatavahi' },
-      { title: 'Billregister' },
-      { title: 'Grantregister' },
-      { title: 'Chequeregister' },
+      { title: 'Add Heads' },
+      { title: 'Create Payments' },
+      { title: 'Download Reports' },
     ],
+    reports : [
+      { title: 'Cashbook Report' },
+      { title: 'Appendix9 Report' },
+      { title: 'Appendix10 Report' },
+      { title: 'Khatavahi Report' },
+      { title: 'Billregister Report' },
+      { title: 'Grantregister Report' },
+      { title: 'Chequeregister Report' },
+    ]
   },
 ];
 
@@ -86,23 +113,32 @@ const PremiumSubscription = () => {
   const RAZORPAY_KEY = 'rzp_test_GLComtpgG1StCu';
 
   const handlePayment = async (amount: number) => {
+    const userId = await getLocalStorage('user_id');
+    const orderCreate = await createSubscriptionOrder(subscriptionPlans[selectedPlan]?._id)
+    console.log({userId, orderCreate:orderCreate.data.orderId})
     try {
       const options = {
         description: 'Payment for services',
         image: 'https://your-app-logo.png',
         currency: 'INR',
         key: RAZORPAY_KEY,
-        amount: amount * 100, // Convert to paise
-        name: 'Rojmel Store',
-        prefill: {
-          email: 'shubhamsharma20007@gmail.com',
-          contact: '7073830702',
-          name: 'Shubham Sharma'
+        amount: orderCreate.data.amount,
+        name: 'Rojmel',
+        order_id:orderCreate.data.orderId,
+        // prefill: {
+        //   email: 'shubhamsharma20007@gmail.com',
+        //   contact: '7073830702',
+        //   name: 'Shubham Sharma'
+        // },
+        notes: {
+          user_id: userId,
+          subscriptionId:subscriptionPlans[selectedPlan]?._id
         },
         theme: { color: '#1a237e' },
       };
       const data = await RazorpayCheckout.open(options as any);
       if (data.razorpay_payment_id) {
+      // await paymentAuthorization(data.razorpay_payment_id, amount)
      return router.push('/(tabs)/home')
       }
     } catch (error: any) {
@@ -152,7 +188,7 @@ const PremiumSubscription = () => {
               {plan.amount > 0 ? (
                 <View style={styles.discountBadge}>
                 <Text style={styles.discountText}>{
-                plan.plan_name=== "Premium Plan" ? 'Premium' :'Basic '}</Text>
+                plan.plan_name}</Text>
               </View>
               ) :(
                 <View style={styles.emptydiscountBadge}>
@@ -160,7 +196,7 @@ const PremiumSubscription = () => {
                 </View>
               )}
               <Text style={styles.monthsText}>₹{plan.amount}</Text>
-              <Text style={styles.monthsLabelText}> Per Year</Text>
+              <Text style={styles.monthsLabelText}>Plan</Text>
               {/* <Text style={styles.priceText}>₹{plan.amount}/mt</Text> */}
             </TouchableOpacity>
             )
@@ -176,21 +212,36 @@ const PremiumSubscription = () => {
 </Text>
 
         </TouchableOpacity> */}
-      <CustomButton customStyle={styles.subscribeButton} text={` Get the ${subscriptionPlans[selectedPlan]?.plan_name === "Premium Plan" ? "Premium Plan" : "Basic Plan"} for ₹ ${subscriptionPlans[selectedPlan]?.amount}`} handlePress={async()=>{
+      <CustomButton customStyle={styles.subscribeButton} text={`Purchase Plan`} handlePress={async()=>{
        await handlePayment(subscriptionPlans[selectedPlan]?.amount)
       }}/>
         
         {/* Billing Info */}
         <View style={styles.billingInfoContainer}>
-          <Text style={styles.billingQuestion}>What We Will Provide</Text>
-          <Text style={styles.billingExplanation}>
-        {ReportLists[selectedPlan]?.features
+          <Text style={[styles.sectionTitle,{marginBottom:5, fontSize:17}]}>What We Will Provide</Text>
+
+          <View>
+        {/* {ReportLists[selectedPlan]?.features
           .map((feature, index,array) => (
-            <Text key={index}>
-              {feature.title}{index < array.length -1 ? ', ' :''}
-            </Text>
-          ))}
-        </Text>
+            <View>
+              <Text key={index} style={[styles.sectionTitle,{fontWeight:'400'}]}>
+              {'✔ '} {feature.title}{index < array.length -1 ? '\n' :''}
+              </Text>
+            </View>
+          ))} */}
+        </View>
+          <View>
+          </View>
+          {/* Reports Section */}
+        {ReportLists[selectedPlan]?.reports?.length ? (
+          <>
+            {ReportLists[selectedPlan]?.reports?.map((report, index) => (
+              <View key={`report-${index}`} style={[styles.listItem,{paddingLeft:8}]}>
+                <Text style={styles.listText}>{'✔ '} {report.title}</Text>
+              </View>
+            ))}
+          </>
+        ) : null}
 
         
         </View>
@@ -256,7 +307,8 @@ const styles = StyleSheet.create({
   },
   plansContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:'center',
+    gap : 20,
     marginBottom: 20,
   },
   planCard: {
@@ -320,11 +372,14 @@ const styles = StyleSheet.create({
   },
   billingInfoContainer: {
     marginBottom: 20,
-
+    alignSelf: 'center',  // Centers the container itself
+    width: '55%',  // Adjust width as needed
+    padding: 10,  
+    borderRadius: 10,  
   },
   billingQuestion: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '100',
     color: '#333',
     textAlign:'center',
     marginBottom: 8,
@@ -332,10 +387,21 @@ const styles = StyleSheet.create({
   billingExplanation: {
     fontSize: 14,
     color: '#666',
-    fontWeight:'500',
-    marginBottom: 20,
-    lineHeight: 20,
-        textAlign:'center'
+    fontWeight:500,
+  },
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  listItem: {
+    padding: 2,
+    borderRadius: 8,
+    marginVertical: 3,
+  },
+  listText: {
+    fontSize: 14,
+    color: '#555',
   },
 });
 

@@ -16,8 +16,11 @@ import Toast from "react-native-toast-message";
 import { REGISTER } from "@/constant/apis";
 import { ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { CustomTextInput } from "./components/customTextInput";
+import { CustomTextInput } from "./customTextInput";
 import { StatusBar } from "expo-status-bar";
+import Header from "./header";
+import { getUserDetails, updateUserDetails } from '@/helper/api-communication';
+import { getLocalStorage } from '@/helper/asyncStorage';
 interface FormData {
   brc_full_name: string;
   school_name: string;
@@ -60,6 +63,25 @@ export default function Register() {
     business_email: "",
     password: "",
   });
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  const fetchUserDetails = async () => {
+    try {
+      setLoading(true);
+      const response = await getUserDetails(); 
+    // Replace with the correct user ID if needed
+      // if (response.status === 200) {
+        setFormData(response.data);
+      // }
+    } catch (err) {
+      console.error("Error fetching user details:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({
@@ -162,49 +184,56 @@ export default function Register() {
   };
 
   const handleSubmit = async () => {
-    if (validateSection(3)) {
-      try {
-        const response = await Instance.post(REGISTER, formData);
-        if (response.status === 200 || response.status === 201) {
-          Toast.show({
-            visibilityTime:1000,
-            type: "success",
-            text1: "✅ Sucesss",
-            text2Style: {
-              fontSize: 12,
-            },
-            text2: "User Register Successfully",
-            onHide: () => {
-              router.push("/");
-            }
-          });
+    let data = formData
+    const res = {
+      "brc_full_name": data.brc_full_name,
+      "school_name": data.school_name,
+      "school_dice_code": data.school_dice_code,
+      "rojmel_name": data.rojmel_name,
+      "cluster_name": data.cluster_name,
+      "block_name": data.block_name,
+      "bank_name": data.bank_name,
+      "bank_branch_name": data.bank_branch_name,
+      "bank_account_no": data.bank_account_no,
+      "business_email": data.business_email,
+      "mobile_no": data.mobile_no,
+      "district": data.district,
+      "sub_division": data.sub_division,
+      "pincode": data.pincode,
+      "address": data.address
+  }
 
-        }
-      } catch (err: any) {
-        console.warn("Error:", err);
-        if (err.response) {
-          Toast.show({
-            type: "error",
-            text1: "❌ Error",
-            text2Style: {
-              fontSize: 12,
-            },
-            text2: err.response.data.message,
-          });
-        }
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      const user_id = await getLocalStorage('user_id') ;
+      const response = await updateUserDetails(user_id!, res)
+
+      if (response!.statusCode == 200) {
+        Toast.show({
+          type: "success",
+          text1: "✅ Success",
+          text2: "User details updated successfully",
+          visibilityTime:1000,
+          onHide: () => {
+            router.back()
+          },
+        });
       }
+    } catch (err: any) {
+      console.error("Error updating user:", err);
+      Toast.show({
+        type: "error",
+        text1: "❌ Error",
+        text2: err.response?.data?.message || "Update failed",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-     <StatusBar translucent style="dark"/>
-    <ImageBackground
-      source={require("../assets/images/background_image.jpg")}
-      style={styles.backgroundImage}
-    >
+      <Header title="Update Profile " key={"profile"} iconName="arrow-back" backPath />
       <ScrollView
         style={{
           flex: 1,
@@ -212,13 +241,7 @@ export default function Register() {
           paddingHorizontal: 20,
         }}
       >
-        <View style={{ height: 180, justifyContent: "center" }}>
-          <Text style={[styles.title, { color: "#1a237e" }]}>Sign Up</Text>
-          <Text style={styles.desc}>
-            Create your account today to experience
-          </Text>
-          <Text style={styles.desc}>easy and organized accounting.</Text>
-        </View>
+      
 
         <View>
           {currentSection === 1 && (
@@ -379,14 +402,6 @@ export default function Register() {
                  }
                
               />
-              <CustomTextInput
-                 placeholder="Password *"
-                 label="Password *"
-                 secureTextEntry={true}
-                 value={formData.password}
-                 onChangeText={(value) => handleInputChange("password", value)}
-                type={'default'}
-              />
             </View>
           )}
 
@@ -417,38 +432,12 @@ export default function Register() {
                 }}
               >
                 {/* <ActivityIndicator size="small" color="white" /> */}
-                <Text style={styles.textButton}>Create Account</Text>
+                <Text style={styles.textButton}>Submit</Text>
               </TouchableOpacity>
             )}
           </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: 6,
-              marginTop: 20,
-              marginBottom: 30,
-            }}
-          >
-            <Text style={{ textAlign: "center", fontSize: 16 }}>
-              Already have an account?
-            </Text>
-            <TouchableOpacity onPress={() => router.push("/")}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "#1a237e",
-                  fontWeight: "700",
-                }}
-              >
-                Sign In
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
-      </ScrollView>
-    </ImageBackground></>
+      </ScrollView></>
   );
 }
 
