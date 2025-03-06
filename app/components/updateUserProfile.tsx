@@ -106,19 +106,19 @@ export default function Register() {
         );
         if (emptyField1) {
           Toast.show({
-            type: "success",
-            text1: "❌ Error",
+            type: "error",
+            text1: "❌ ભૂલ",
             text2Style: {
               fontSize: 12,
             },
-            text2: `Please fill in ${emptyField1
+            text2: `કૃપા કરીને ${emptyField1
               .replace(/([A-Z])/g, " $1")
-              .toLowerCase()}`,
+              .toLowerCase()} ભરો.`,
           });
           return false;
         }
         return true;
-
+  
       case 2:
         const section2Fields = [
           "bank_name",
@@ -134,20 +134,20 @@ export default function Register() {
         );
         if (emptyField2) {
           Toast.show({
-            type: "success",
-            text1: "❌ Error",
+            type: "error",
+            text1: "❌ ભૂલ",
             text2Style: {
               fontSize: 12,
             },
-            text2: `Please fill in ${emptyField2
+            text2: `કૃપા કરીને ${emptyField2
               .replace(/([A-Z])/g, " $1")
-              .toLowerCase()}`,
+              .toLowerCase()} ભરો.`,
           });
-
+  
           return false;
         }
         return true;
-
+  
       case 3:
         const section3Fields = ["mobile_no", "business_email", "password"];
         const emptyField3 = section3Fields.find(
@@ -155,23 +155,24 @@ export default function Register() {
         );
         if (emptyField3) {
           Toast.show({
-            type: "success",
-            text1: "❌ Error",
+            type: "error",
+            text1: "❌ ભૂલ",
             text2Style: {
               fontSize: 12,
             },
-            text2: `Please fill in ${emptyField3
+            text2: `કૃપા કરીને ${emptyField3
               .replace(/([A-Z])/g, " $1")
-              .toLowerCase()}`,
+              .toLowerCase()} ભરો.`,
           });
           return false;
         }
         return true;
-
+  
       default:
         return false;
     }
   };
+  
 
   const nextSection = () => {
     if (validateSection(currentSection)) {
@@ -211,8 +212,8 @@ export default function Register() {
       if (response!.statusCode == 200) {
         Toast.show({
           type: "success",
-          text1: "✅ Success",
-          text2: "User details updated successfully",
+          text1: "✅ સફળતા",
+          text2: (response.message),
           visibilityTime:1000,
           onHide: () => {
             router.back()
@@ -224,8 +225,8 @@ export default function Register() {
       console.error("Error updating user:", err);
       Toast.show({
         type: "error",
-        text1: "❌ Error",
-        text2: err.response?.data?.message || "Update failed",
+        text1: "❌ ભૂલ",
+        text2: err.response?.data?.message,
       });
     } finally {
       setLoading(false);
