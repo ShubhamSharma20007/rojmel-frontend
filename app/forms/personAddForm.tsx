@@ -8,6 +8,7 @@ import {
   Platform,
   Keyboard,
   Image,
+  Alert,
 } from "react-native";
 
 // import { Image } from "expo-image";
@@ -28,7 +29,11 @@ const PersonAddForm = () => {
   const handleAdd = () => {
     const numberOfRows = parseInt(inputValue);
     if (!numberOfRows || numberOfRows <= 0) {
-      alert("Please enter a valid number of rows.");
+      Alert.alert(
+        "ચેતવણી", // Title (Warning)
+        "કૃપા કરીને કોઈપણ નંબર દાખલ કરો", // Message (Please enter any number)
+        [{ text: "ઠીક છે"}] // OK Button (Okay in Gujarati)
+      );
       return;
     }
 
@@ -64,7 +69,11 @@ const PersonAddForm = () => {
           !entry.opening_balance_cash
       )
     ) {
-      alert("Please fill all the fields before submitting.");
+      Alert.alert(
+        "ચેતવણી", // Title (Warning)
+        "કૃપા કરીને તમામ ફીલ્ડ ભરો પછી જ સબમિટ કરો", // Message (Please enter any number)
+        [{ text: "ઠીક છે"}] // OK Button (Okay in Gujarati)
+      );
       return;
     }
     const removeIdEnteries = entries.map((entry: any) => {
@@ -79,7 +88,7 @@ const PersonAddForm = () => {
     if (data.statusCode === 201 || data.statusCode === 200) {
       Toast.show({
         type: "success",
-        text1: "✅ Success",
+        text1: "✅ સફળતા",
         text2: data.message,
         text2Style: {
           fontSize: 12,
@@ -93,7 +102,7 @@ const PersonAddForm = () => {
     } else {
       Toast.show({
         type: "error",
-        text1: "❌ Error",
+        text1: "❌ ભૂલ",
         text2: data.message,
         text2Style: {
           fontSize: 12,
@@ -164,28 +173,28 @@ const PersonAddForm = () => {
       {/* <View style={styles.header}>
         <Text style={styles.storeText}>Add Transaction</Text>
       </View> */}
-      <Header title='Add Heads' iconName='arrow-back' backPath={true} />
+      <Header title='નવા હેડ અને ઓપનીંગ બેલેન્સ ઉમેરો' iconName='arrow-back' backPath={true} />
       <View style={styles.content}>
         <View style={styles.inputRow}>
           <TextInput
             mode="outlined"
-            label={"Number of heads"}
+            label={"હેડ ની સંખ્યા દાખલ કરો"}
             value={inputValue}
             onChangeText={setInputValue}
             style={styles.input}
-            placeholder="Number of heads"
+            placeholder="હેડ ની સંખ્યા દાખલ કરો"
             keyboardType="numeric"
           />
           <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-            <Text style={styles.buttonText}>Add Rows</Text>
+            <Text style={styles.buttonText}>+ ઉમેરો</Text>
           </TouchableOpacity>
         </View>
         {entries.length > 0 ? (
           <>
             <View style={styles.tableHeader}>
-              <Text style={[styles.headerCell, { flex: 1.8 }]}>Head Name</Text>{" "}
-              <Text style={[styles.headerCell, { flex: 1.2 }]}>Bank Amt.</Text>{" "}
-              <Text style={[styles.headerCell, { flex: 1 }]}>Cash Amt.</Text>
+              <Text style={[styles.headerCell, { flex: 1.8, textAlign:'center' }]}>હેડ નું નામ</Text>{" "}
+              <Text style={[styles.headerCell, { flex: 1.2, textAlign:'center' }]}>બેક બેલેન્સ</Text>{" "}
+              <Text style={[styles.headerCell, { flex: 1, textAlign:'center' }]}>રોકડ બેલેન્સ</Text>
               <Text style={[styles.headerCell, { flex: 0.6 }]}> </Text>
             </View>
 
@@ -196,13 +205,13 @@ const PersonAddForm = () => {
                 style={[styles.button, styles.cancelButton]}
                 onPress={handleCancel}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>રદ કરો</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.submitButton]}
                 onPress={handleSubmit}
               >
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.submitButtonText}>સબમિટ કરો</Text>
               </TouchableOpacity>
             </View>
           </>

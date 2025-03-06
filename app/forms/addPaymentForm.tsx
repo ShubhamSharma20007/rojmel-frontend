@@ -54,14 +54,14 @@ const TransactionForm: React.FC = () => {
   const [showClearingDatePicker, setShowClearingDatePicker] = useState(false);
 
   const transactionTypes: RadioOption[] = [
-    { label: 'In', value: 'IN' },
-    { label: 'Out', value: 'OUT' },
+    { label: 'આવક', value: 'IN' },
+    { label: 'જાવક', value: 'OUT' },
   ];
 
   const paymentMethods: RadioOption[] = [
-    { label: 'Cash', value: 'cash' },
-    { label: 'Online', value: 'online' },
-    { label: 'Cheque', value: 'cheque' },
+    { label: 'રોકડ', value: 'cash' },
+    { label: 'ઓનલાઈન/બેંક', value: 'online' },
+    { label: 'ચેક/PFMS', value: 'cheque' },
   ];
 
   const handleChange = (name: keyof TransactionFormData, value: string | Date | null) => {
@@ -84,8 +84,8 @@ const TransactionForm: React.FC = () => {
       if (!formData[field as keyof TransactionFormData]) {
         Toast.show({
           type: "error",
-          text1: "❌ Error",
-          text2: `${label} is required`,
+          text1: "❌ ભૂલ",
+          text2: `${label} આવશ્યક છે`,
           text2Style: {
             fontSize: 12,
           },
@@ -97,16 +97,15 @@ const TransactionForm: React.FC = () => {
     if (formData.amount && isNaN(Number(formData.amount))) {
       Toast.show({
         type: "error",
-        text1: "❌ Error",
-        text2: "Amount must be a valid number",
+        text1: "❌ ભૂલ",
+        text2: "રકમ માન્ય નંબર હોવી જોઈએ",
         text2Style: {
           fontSize: 12,
         },
       });
       return false;
     }
-
-    return true;
+    return true;    
   };
 
  
@@ -129,8 +128,8 @@ const TransactionForm: React.FC = () => {
         if(response?.statusCode ===201){
           Toast.show({
             type: "success",
-            text1: "✅ Success",
-            text2: "Payment added successfully",
+            text1: "✅ સફળતા",
+            text2: (response.message),
             text2Style: {
               fontSize: 12,
             },
@@ -152,8 +151,8 @@ const TransactionForm: React.FC = () => {
       } catch (err: any) {
         Toast.show({
           type: "error",
-          text1: "❌ Error",
-          text2: err.response?.data?.message || "An error occurred",
+          text1: "❌ ભૂલ",
+          text2: err.response?.data?.message,
           text2Style: {
             fontSize: 12,
           },
@@ -162,12 +161,23 @@ const TransactionForm: React.FC = () => {
     }
   };
 
-   
+  const handleCancel = () => {
+    setFormData({
+      transaction_date: '',
+      head_id: '',
+      amount: '',
+      transaction_type: '',
+      payment_method: '',
+      details: '',
+      cheque_number:'',
+      cheque_pfms_clearing_date:''
+    })
+  };
 
   return (
     <View style={styles.container}>
     
-    <Header title='Add Rojmel' backPath={true} iconName='arrow-back' />
+    <Header title='રોજમેળ ની એન્ટ્રી' backPath={true} iconName='arrow-back' />
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
@@ -188,7 +198,7 @@ const TransactionForm: React.FC = () => {
             onPress={() => setShowDatePicker(true)}
           >
             <Text style={[styles.dateText]}>
-            {formData.transaction_date ? (formData.transaction_date as Date).toLocaleDateString() : 'Select Transaction Date'}
+            {formData.transaction_date ? (formData.transaction_date as Date).toLocaleDateString() : 'તારીખ પસંદ કરો'}
             </Text>
           </TouchableOpacity>
           {showDatePicker && (
@@ -237,7 +247,7 @@ const TransactionForm: React.FC = () => {
    
    }]}
     setItems={setItems}
-    placeholder="Select a Head Name"
+    placeholder="હેડ પસંદ કરો"
   
   dropDownContainerStyle={{
     backgroundColor: "#F1F4FF",
@@ -247,7 +257,7 @@ const TransactionForm: React.FC = () => {
   searchTextInputStyle={{
     borderWidth:0
   }}
-  searchPlaceholder='Search for a head name'
+  searchPlaceholder='હેડ શોધો...'
 
 
     listMode="SCROLLVIEW"
@@ -264,13 +274,13 @@ const TransactionForm: React.FC = () => {
           <CustomTextInput
             value={formData.amount}
             onChangeText={(value) => handleChange('amount', value)}
-            placeholder="Amount"
-            label="Amount"
+            placeholder="રકમ"
+            label="રકમ"
             type={'numeric'}
           />          
          
 
-          <Text style={styles.label}>Transaction Type *</Text>
+          <Text style={styles.label}>પ્રકાર પસંદ કરો *</Text>
           <View style={styles.radioGroup}>
             {transactionTypes.map((type) => (
               <RadioButton
@@ -282,7 +292,7 @@ const TransactionForm: React.FC = () => {
             ))}
           </View>
 
-          <Text style={styles.label}>Payment Method *</Text>
+          <Text style={styles.label}>ચુકવણી પદ્ધતિ *</Text>
           <View style={styles.radioGroup}>
             {paymentMethods.map((method) => (
               <RadioButton
@@ -298,8 +308,8 @@ const TransactionForm: React.FC = () => {
         <CustomTextInput
             value={formData.details}
             onChangeText={(value) => handleChange('details', value)}
-            placeholder="Description"
-            label="Description"
+            placeholder="કોને ચૂકવ્યા/ગ્રાન્ટ આવેલ તેની વિગત"
+            label="કોને ચૂકવ્યા/ગ્રાન્ટ આવેલ તેની વિગત"
             type={'default'}
             
           />        
@@ -309,8 +319,8 @@ const TransactionForm: React.FC = () => {
         <CustomTextInput
             value={formData.cheque_number!}
             onChangeText={(value) => handleChange('cheque_number', value)}
-            placeholder="Cheque/PFMS/Voucher No."
-            label="Cheque/PFMS/Voucher No."
+            placeholder="ચેક/PFMS નંબર"
+            label="ચેક/PFMS નંબર"
             type={'numeric'}
             
           />      
@@ -324,7 +334,7 @@ const TransactionForm: React.FC = () => {
             onPress={() => setShowClearingDatePicker(true)}
           >
             <Text style={styles.dateText}>
-              {formData.cheque_pfms_clearing_date ? new Date(formData.cheque_pfms_clearing_date).toLocaleDateString() : 'Clearing Date'}
+              {formData.cheque_pfms_clearing_date ? new Date(formData.cheque_pfms_clearing_date).toLocaleDateString() : 'ચેક/PFMS ક્લીયરિંગ તારીખ'}
             </Text>
           </TouchableOpacity>
           {showClearingDatePicker && (
@@ -340,7 +350,20 @@ const TransactionForm: React.FC = () => {
               }}
             />
           )}
-        <CustomButton text='Submit' handlePress={handlePaymentForm}/>
+        <View style={styles.bottomButtons}>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={handleCancel}
+              >
+                <Text style={styles.cancelButtonText}>રદ કરો</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.submitButton]}
+                onPress={handlePaymentForm}
+              >
+                <Text style={styles.submitButtonText}>સબમિટ કરો</Text>
+              </TouchableOpacity>
+            </View>
         </View>
       </ScrollView>
       
@@ -427,7 +450,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#000',
   },
- 
+  bottomButtons: {
+    flexDirection: "row",
+    marginBottom: 20,
+    marginTop: 10,
+    gap: 8,
+  },
+  button: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    elevation: 2,
+  },
+  cancelButton: {
+    backgroundColor: "#f5f5f5",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  submitButton: {
+    backgroundColor: "#1a237e",
+  },
+  cancelButtonText: {
+    color: "#000",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  submitButtonText: {
+    fontSize: 14,
+    color: "white",
+    fontWeight: "bold",
+  },
  
 });
 

@@ -15,6 +15,7 @@ import Header from "../components/header";
 import { useRouter} from "expo-router";
 import {getLocalStorage} from "../../helper/asyncStorage"
 import {handleSplitName} from "../../helper/splitName"
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const More = () => {
@@ -29,16 +30,16 @@ const More = () => {
     router.push("/"); // Redirect to login page
   }
 
-  useEffect(()=>{
+  useFocusEffect(()=>{
     (async()=>{
       const userDetails = await getLocalStorage('school_name')
       getUserDetails(userDetails!);
     })
-() },[])
+() }) 
 
   return (
     <View style={styles.container}>
-      <Header title="Profile" key={"profile"} iconName="" />
+      <Header title="પ્રોફાઇલ" key={"profile"} iconName="" />
 
       <ScrollView>
         <View style={styles.profileSection}>
@@ -51,20 +52,20 @@ const More = () => {
               <TouchableOpacity style={styles.editButton}
               onPress={()=>router.push('/components/updateUserProfile')}
               >
-                <Text style={styles.editButtonText}>Edit</Text>
+                <Text style={styles.editButtonText}>ફેરફાર કરો</Text>
               </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.menuItems}>
             {[
-              { icon: "card", title: "Subscription Plans", path: "/components/subscription" },
-              { icon: "card", title: "Financial Year", path: "/components/financialYearChange" },
-              { icon: "receipt", title: "Purchase History", path: "/components/purchaseHistory" },
-              { icon: "shield-checkmark", title: "Privacy & Policy", path: "/components/privacyPolicy" },
-              { icon: "information-circle", title: "About Us", path: "/components/aboutUs" },
-              { icon: "headset", title: "Help & Support", path: "/components/helpAndSupport" },
-              { icon: "help-circle", title: "How to use ?", path: "https://www.youtube.com/watch?v=veyoAuaw_8w" },
+              { icon: "card", title: "યોજનાઓ", path: "/components/subscription" },
+              { icon: "card", title: "યોજના બદલો", path: "/components/financialYearChange" },
+              { icon: "receipt", title: "યોજનાઓનો ઇતિહાસ", path: "/components/purchaseHistory" },
+              { icon: "shield-checkmark", title: "કેવી રીતે ઉપયોગ કરવો", path: "/components/privacyPolicy" },
+              { icon: "information-circle", title: "રોજમેલ વિશે", path: "/components/aboutUs" },
+              { icon: "headset", title: "અમને કૉલ કરો", path: "/components/helpAndSupport" },
+              { icon: "help-circle", title: "કેવી રીતે ઉપયોગ કરવો ?", path: "https://www.youtube.com/watch?v=veyoAuaw_8w" },
             ].map((item: any, index) => (
               <TouchableOpacity key={index} style={styles.menuItem} onPress={() => handleRedirection(item.path)}>
                 <View style={styles.menuLeft}>
@@ -78,7 +79,7 @@ const More = () => {
             {/* Logout Button */}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <Ionicons name="log-out-outline" size={24} color="red" />
-              <Text style={styles.logoutText}>Logout</Text>
+              <Text style={styles.logoutText}>લૉગ આઉટ</Text>
             </TouchableOpacity>
 
           </View>

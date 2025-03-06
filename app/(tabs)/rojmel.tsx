@@ -82,11 +82,17 @@ const Rojmel = () => {
     setIsSorted(!isSorted)
   }
 
+  const paymentMethodGujarati: Record<string, string> = {
+    cash: "રોકડ",
+    cheque: "ચેક",
+    online: "ઓનલાઇન",
+  };
+
   return (
     <View style={[styles.container]}>
       {/* Header */}
 
-      <Header iconName="" title="Rojmel" key={'pay'} />
+      <Header iconName="" title="રોજમેળ" key={'pay'} />
 
       {/* Balance Cards */}
       <View style={styles.balanceContainer}>
@@ -108,7 +114,7 @@ const Rojmel = () => {
               }}
             >
               <Text style={[styles.balanceAmount, { color: "#4CAF50" }]}>{currency(totalPaymentIn)}</Text>
-              <Text style={styles.balanceLabel}>Total Payment In</Text>
+              <Text style={styles.balanceLabel}>કુલ આવેલ ગ્રાન્ટ</Text>
             </View>
             <View
               style={{
@@ -119,7 +125,7 @@ const Rojmel = () => {
               }}
             >
               <Text style={[styles.balanceAmount, { color: "#ff00008a" }]}>{currency(totalPaymentOut)}</Text>
-              <Text style={styles.balanceLabel}>Total Payment Out</Text>
+              <Text style={styles.balanceLabel}>કુલ વપરાયેલ ગ્રાન્ટ</Text>
             </View>
           </View>
         </View>
@@ -128,7 +134,7 @@ const Rojmel = () => {
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#666" />
         <TextInput
-          placeholder="Search By Head Or Description..."
+          placeholder="શોધો..."
           style={[styles.searchInput, { height: '100%' }]}
           onChangeText={handleFilterHead}
           value={searchQuery}
@@ -156,9 +162,9 @@ const Rojmel = () => {
         }}
 
       >
-        <Text style={{ flex: 2 }}>ENTRIES</Text>
-        <Text style={{ flex: 1, textAlign: 'center' }}>IN</Text>
-        <Text style={{ flex: 1, textAlign: 'center' }}>OUT</Text>
+        <Text style={{ flex: 2 }}>એન્ટ્રીઓ</Text>
+        <Text style={{ flex: 1, textAlign: 'center' }}>આવક</Text>
+        <Text style={{ flex: 1, textAlign: 'center' }}>જાવક</Text>
 
       </View>
 
@@ -191,7 +197,11 @@ const Rojmel = () => {
                           year: 'numeric'
                         })}  
                         </Text>
-                        <View style={styles.paymentMethod}><Text style={styles.paymentText} >{item?.payment_method.charAt(0).toUpperCase() + item?.payment_method.slice(1).toLowerCase()}</Text></View>
+                        <View style={styles.paymentMethod}>
+                          <Text style={styles.paymentText}>
+                            {paymentMethodGujarati[item?.payment_method?.toLowerCase() as string] || item?.payment_method}
+                          </Text>
+                        </View>
                        </View>
                         <Text style={styles.headtext}>{item?.head_id?.head_name}</Text>
                         <Text style={{ color: 'gray' }}>{item?.details}</Text>
@@ -214,7 +224,7 @@ const Rojmel = () => {
           </ScrollView>
           : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ textAlign: 'center', fontSize: 20, color: 'gray' }}>
-              No Transaction's Found
+            કોઈ લેણદેણ મળ્યું નથી
             </Text>
           </View>
       }
@@ -233,7 +243,7 @@ const Rojmel = () => {
           style={styles.addButton}
           onPress={() => router.push("/forms/addPaymentForm")}
         >
-          <Text style={styles.addButtonText}>ADD ROJMEL</Text>
+          <Text style={styles.addButtonText}>રોજમેળ ની એન્ટ્રી</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -46,13 +46,13 @@ const Report = () => {
   const [fixValue, setFixValue] = React.useState<string>('')
   const [items, setItems] = React.useState<{ value: string, label: string }[]>([]);
   const [fixItems, fixSetItems] = React.useState([
-    { label: 'Cashbook', value: 'cashbook' },
-    { label: 'Appendix9', value: 'appendix9' },
-    { label: 'Appendix10', value: 'appendix10' },
-    { label: 'khatavahi', value: 'khatavahi' },
-    { label: 'Billregister', value: 'billregister' },
-    { label: 'Grantregister', value: 'grantregister' },
-    { label: 'Chequeregister', value: 'chequeregister' },
+    { label: 'કેશબુક', value: 'cashbook' },
+    { label: 'પરિશિષ્ટ-૯', value: 'appendix9' },
+    { label: 'પરિશિષ્ટ-૧૦', value: 'appendix10' },
+    { label: 'ખાતાવહી', value: 'khatavahi' },
+    { label: 'બિલ રજિસ્ટર', value: 'billregister' },
+    { label: 'ગ્રાન્ટ રજિસ્ટર', value: 'grantregister' },
+    { label: 'ચેક રજિસ્ટર', value: 'chequeregister' },
   ]);
 
 
@@ -128,22 +128,22 @@ const Report = () => {
               console.log('File copied to:', fileUri);
               // for sharing the file 
               //  Sharing.shareAsync(uri);
-                Toast.show({
-                        type: "success",
-                        text1: "✅ Success",
-                        text2: "File downloaded successfully",
-                        text2Style: {
-                          fontSize: 12,
-                        },
-                      });
+              Toast.show({
+                type: "success",
+                text1: "✅ સફળતા",
+                text2: "ફાઇલ સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ",
+                text2Style: {
+                  fontSize: 12,
+                },
+              });              
               Notifications.scheduleNotificationAsync({
                 content: {
-                  title: 'File Downloaded',
-                  body: 'Your PDF has been downloaded successfully',
+                  title: 'ફાઇલ ડાઉનલોડ થઈ ગઈ',
+                  body: 'તમારા PDF ને સફળતાપૂર્વક ડાઉનલોડ કરવામાં આવ્યો છે',
                   data: { url: uri },
                 },
                 trigger: null,
-              })
+              });              
             })
         }
 
@@ -154,7 +154,7 @@ const Report = () => {
     } catch (err:any) {
       Toast.show({
         type: "error",
-        text1: "❌ Error",
+        text1: "❌ ભૂલ",
         text2Style: {
           fontSize: 12,
         },
@@ -205,7 +205,7 @@ const Report = () => {
     <View style={[styles.container]}>
       {/* Header */}
     <StatusBar translucent style="light"/>
-      <Header iconName="" title="Report" key={'pay'} />
+      <Header iconName="" title="રિપોર્ટ્સ" key={'pay'} />
 
       {/*  List of Entries */}
       <View style={{ flex: 1, padding: 10 }}>
@@ -221,7 +221,7 @@ const Report = () => {
           }}
 
           setItems={fixSetItems}
-          placeholder={'Select The Report Type'}
+          placeholder={'અહેવાલ પ્રકાર પસંદ કરો'}
           style={[styles.input, {
             backgroundColor: "#F1F4FF",
             borderColor: '#d1d9ff',
@@ -272,13 +272,13 @@ const Report = () => {
                 borderTopWidth: 0,
               }}
               setItems={setItems}
-              placeholder="Select a Head Name"
+              placeholder="હેડ પસંદ કરો"
 
 
               searchTextInputStyle={{
                 borderWidth: 0
               }}
-              searchPlaceholder='Search for a head name'
+              searchPlaceholder='હેડ ના નામથી શોધો'
 
 
               listMode="SCROLLVIEW"
@@ -334,7 +334,7 @@ const Report = () => {
         >
           <Text style={styles.addButtonText}>DOWNLOAD REPORT</Text>
         </TouchableOpacity> */}
-        <CustomButton handlePress={handleDownloadReport} text="DOWNLOAD REPORT" key='download_report' />
+        <CustomButton handlePress={handleDownloadReport} text="PDF જનરેટ કરો" key='download_report' />
       </View>
     </View>
   );
