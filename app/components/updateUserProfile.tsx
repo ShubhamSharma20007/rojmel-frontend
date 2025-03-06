@@ -20,7 +20,7 @@ import { CustomTextInput } from "./customTextInput";
 import { StatusBar } from "expo-status-bar";
 import Header from "./header";
 import { getUserDetails, updateUserDetails } from '@/helper/api-communication';
-import { getLocalStorage } from '@/helper/asyncStorage';
+import { getLocalStorage, setLocalStorage } from '@/helper/asyncStorage';
 interface FormData {
   brc_full_name: string;
   school_name: string;
@@ -218,6 +218,7 @@ export default function Register() {
             router.back()
           },
         });
+        await setLocalStorage('school_name',res.school_name)
       }
     } catch (err: any) {
       console.error("Error updating user:", err);
@@ -233,7 +234,7 @@ export default function Register() {
 
   return (
     <>
-      <Header title="Update Profile " key={"profile"} iconName="arrow-back" backPath />
+      <Header title="પ્રોફાઇલ અપડેટ કરો " key={"profile"} iconName="arrow-back" backPath />
       <ScrollView
         style={{
           flex: 1,
@@ -252,24 +253,24 @@ export default function Register() {
                 onChangeText={(value) =>
                   handleInputChange("brc_full_name", value)
                 }
-                placeholder="Principle / Worden / CRC / BRC Full Name *"
-                label="Principle / Worden / CRC / BRC Full Name *"
+                placeholder="મુખ્યાધ્યાપક/ વોર્ડન/ સીઆરસી/ બીઆરસીનું પૂરું નામ *"
+                label="મુખ્યાધ્યાપક/ વોર્ડન/ સીઆરસી/ બીઆરસીનું પૂરું નામ *"
                 type={'default'}
               />
               <CustomTextInput
-                placeholder="School Name *"
+                placeholder="શાળાનું નામ *"
                 value={formData.school_name}
                 onChangeText={(value) =>
                   handleInputChange("school_name", value)
                 }
-                label="School Name *"
+                label="શાળાનું નામ *"
                 type={'default'}
               />
 
 
               <CustomTextInput
-                placeholder="School Dise Code *"
-                label="School Dise Code *"
+                placeholder="શાળા DISE કોડ *"
+                label="શાળા DISE કોડ *"
                 value={formData.school_dice_code}
                 onChangeText={(value) =>
                   handleInputChange("school_dice_code", value)
@@ -277,8 +278,8 @@ export default function Register() {
                 type={'numeric'}
               />
               <CustomTextInput
-                placeholder="Rojmel Name *"
-                label="Rojmel Name *"
+                placeholder="રોજમેળનું નામ *"
+                label="રોજમેળનું નામ *"
                 value={formData.rojmel_name}
                 onChangeText={(value) =>
                   handleInputChange("rojmel_name", value)
@@ -286,8 +287,8 @@ export default function Register() {
                 type={'default'}
               />
               <CustomTextInput
-                placeholder="Cluster Name *"
-                label="Cluster Name *"
+                placeholder="ક્લસ્ટરનું નામ *"
+                label="ક્લસ્ટરનું નામ *"
                 value={formData.cluster_name}
                 onChangeText={(value) =>
                   handleInputChange("cluster_name", value)
@@ -295,8 +296,8 @@ export default function Register() {
                 type={'default'}
               />
               <CustomTextInput
-                placeholder="Block Name *"
-                label="Block Name *"
+                placeholder="બ્લોકનું નામ *"
+                label="બ્લોકનું નામ *"
                 value={formData.block_name}
                 onChangeText={(value) =>
                   handleInputChange("block_name", value)
@@ -309,8 +310,8 @@ export default function Register() {
           {currentSection === 2 && (
             <View style={{ marginBottom: 10 }}>
               <CustomTextInput
-                placeholder="Bank Name *"
-                label="Bank Name *"
+                placeholder="બેંકનું નામ *"
+                label="બેંકનું નામ *"
                 value={formData.bank_name}
                 onChangeText={(value) =>
                   handleInputChange("bank_name", value)
@@ -319,8 +320,8 @@ export default function Register() {
               />
 
               <CustomTextInput
-                placeholder="Bank Branch Name *"
-                label="Bank Branch Name *"
+                placeholder="બેંક શાખાનું નામ *"
+                label="બેંક શાખાનું નામ *"
                 value={formData.bank_branch_name}
                 onChangeText={(value) =>
                   handleInputChange("bank_branch_name", value)
@@ -328,8 +329,8 @@ export default function Register() {
                 type={'default'}
               />
               <CustomTextInput
-                placeholder="Bank Account No *"
-                label="Bank Account No *"
+                placeholder="બેંક એકાઉન્ટ નંબર *"
+                label="બેંક એકાઉન્ટ નંબર *"
                 maxLength={12}
                 value={formData.bank_account_no}
                 onChangeText={(value) =>
@@ -341,24 +342,24 @@ export default function Register() {
 
 
               <CustomTextInput
-                placeholder="Address *"
-                label="Address *"
+                placeholder="સરનામું *"
+                label="સરનામું *"
                 value={formData.address}
                 onChangeText={(value) => handleInputChange("address", value)}
                 type={'default'}
               />
 
               <CustomTextInput
-                placeholder="District *"
-                label="District *"
+                placeholder="જિલ્લો *"
+                label="જિલ્લો *"
                 value={formData.district}
                 onChangeText={(value) => handleInputChange("district", value)}
                 type={'default'}
               />
 
               <CustomTextInput
-                placeholder="Sub Division *"
-                label="Sub Division *"
+                placeholder="તાલુકો *"
+                label="તાલુકો *"
                 value={formData.sub_division}
                 onChangeText={(value) =>
                   handleInputChange("sub_division", value)}
@@ -366,8 +367,8 @@ export default function Register() {
               />
 
               <CustomTextInput
-                placeholder="Pincode *"
-                label="Pincode *"
+                placeholder="પિનકોડ *"
+                label="પિનકોડ *"
                 maxLength={6}
                 value={formData.pincode}
                 onChangeText={(value) => handleInputChange("pincode", value)}
@@ -381,8 +382,8 @@ export default function Register() {
             <View >
            
               <CustomTextInput
-                 placeholder="Mobile Number *"
-                 label="Mobile Number *"
+                 placeholder="મોબાઈલ *"
+                 label="મોબાઈલ *"
                  maxLength={10}
                
                  value={formData.mobile_no}
@@ -393,8 +394,8 @@ export default function Register() {
               />
            
               <CustomTextInput
-                 placeholder="Business Email *"
-                 label="Business Email *"
+                 placeholder="બિઝનેસ ઈમેલ *"
+                 label="બિઝનેસ ઈમેલ *"
                  value={formData.business_email}
                  type="email-address"
                  onChangeText={(value) =>
@@ -414,7 +415,7 @@ export default function Register() {
           >
             {currentSection > 1 && (
               <TouchableOpacity style={styles.button} onPress={previousSection}>
-                <Text style={styles.textButton}>Previous</Text>
+                <Text style={styles.textButton}>પછેલું</Text>
               </TouchableOpacity>
             )}
             {currentSection < 3 ? (
@@ -422,7 +423,7 @@ export default function Register() {
                 style={[styles.button, { marginLeft: "auto" }]}
                 onPress={nextSection}
               >
-                <Text style={styles.textButton}>Next</Text>
+                <Text style={styles.textButton}>આગલું</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -432,7 +433,7 @@ export default function Register() {
                 }}
               >
                 {/* <ActivityIndicator size="small" color="white" /> */}
-                <Text style={styles.textButton}>Submit</Text>
+                <Text style={styles.textButton}>સબમિટ કરો</Text>
               </TouchableOpacity>
             )}
           </View>

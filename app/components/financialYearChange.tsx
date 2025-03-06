@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from './header';
 import { getFinancialYears, updateFinancialYear } from '@/helper/api-communication';
 import { Picker } from '@react-native-picker/picker';
-import { getLocalStorage } from '@/helper/asyncStorage';
+import { getLocalStorage, setLocalStorage } from '@/helper/asyncStorage';
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 
@@ -45,9 +45,10 @@ const FinancialYearSelection = () => {
         text2: (respopnse.message),
         text2Style: { fontSize: 12 },
         onHide: async () => {
-          router.push("/");
+          router.back();
         },
       });
+      await setLocalStorage('subscription_id', selectedYear);
     } catch (err: any) {
       console.log("Error:", err);
       Toast.show({
