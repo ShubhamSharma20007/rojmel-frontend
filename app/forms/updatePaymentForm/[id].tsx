@@ -51,6 +51,8 @@ const UpdateTransactionForm: React.FC = () => {
   const [isDisbale, setIsDisabled] = useState(false);
   const { customer } = useCustomerContext();
   const [items, setItems] = useState<{ value: string; label: string }[]>([]);
+  const [transType,setTranType] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [formData, setFormData] = useState<TransactionFormData>({
     transaction_date: "",
     head_id: "",
@@ -62,22 +64,32 @@ const UpdateTransactionForm: React.FC = () => {
     cheque_pfms_clearing_date: "",
   });
 
+ 
   // fetch ledger data from API
   useEffect(() => {
     (async () => {
       const request = await getLedgerById(id as string);
       if (request.statusCode === 200) {
-        setFormData({
-          head_id: request.data.head_id._id || "",
-          amount: request.data.amount || "",
-          transaction_type: request.data.transaction_type || "",
-          transaction_date: request.data.transaction_date || "",
-          payment_method: request.data.payment_method || "",
-          details: request.data.details || "",
-          cheque_number: request.data?.cheque_number || "",
-          cheque_pfms_clearing_date:
-            request.data.cheque_pfms_clearing_date || "",
-        });
+        try {
+          setFormData({
+            head_id: request.data.head_id._id || "",
+            amount: request.data.amount || "",
+            transaction_type: request.data.transaction_type || "",
+            transaction_date: request.data.transaction_date || "",
+            payment_method: request.data.payment_method || "",
+            details: request.data.details || "",
+            cheque_number: request.data?.cheque_number || "",
+            cheque_pfms_clearing_date:
+              request.data.cheque_pfms_clearing_date || "",
+          });
+        } catch (error) {
+          console.log(error as any);
+        }finally{
+    
+            setPaymentMethod(request.data.payment_method )
+            setTranType(request.data.transaction_type)
+          
+        }
       } else {
         console.log(request.message);
       }
@@ -236,17 +248,18 @@ const UpdateTransactionForm: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    if (
-      formData["payment_method"].toLowerCase() === "cash" &&
-      formData["transaction_type"].toLowerCase() === "out"
-    ) {
-      setIsDisabled(true);
-    } else {
-      setIsDisabled(false);
-    }
-  }, [formData.payment_method, formData.transaction_type]);
 
+  useEffect(()=>{
+    console.log({paymentMethod},{transType},isDisbale)
+    if((paymentMethod.toLowerCase() === "cash" || formData.payment_method.toLowerCase()== "cash") && (transType.toLowerCase() === "out" || formData.transaction_type.toLowerCase()== "out")){
+      setIsDisabled(true)
+    } else{
+      setIsDisabled(false)
+    }
+  })
+
+
+ 
   return (
     <View style={styles.container}>
       <Header title="Update Rojmel" backPath={true} iconName="arrow-back" />
@@ -362,8 +375,9 @@ const UpdateTransactionForm: React.FC = () => {
                   selected={formData.transaction_type === type.value}
                   onPress={() => {
                     // Prevent changing the selection when transaction_type is "out"
-                    if (formData.transaction_type.toLowerCase() === "out") {
-                      setIsDisabled(true)
+                    if (formData.transaction_type.toLowerCase() === "out" && transType.toLowerCase() === "out" && paymentMethod.toLowerCase()==="cash") {
+                      setIsDisabled(!isDisbale)
+                     return ;
                     }
                     handleChange("transaction_type", type.value);
                   }}
@@ -380,8 +394,8 @@ const UpdateTransactionForm: React.FC = () => {
                   selected={formData.payment_method === method.value}
                   // onPress={() => handleChange("payment_method", method.value)}
                   onPress={() => {
-                    if (formData.payment_method.toLowerCase() === "cash") {
-                      setIsDisabled(true)
+                    if (formData.payment_method.toLowerCase() === "cash" && paymentMethod.toLowerCase()==="cash" && transType.toLowerCase() === "out") {
+                      return;
                     }
                     handleChange("payment_method", method.value);
                   }}
