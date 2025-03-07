@@ -249,6 +249,14 @@ const UpdateTransactionForm: React.FC = () => {
   };
 
 
+  useEffect(()=>{
+    console.log({paymentMethod},{transType},isDisbale)
+    if((paymentMethod.toLowerCase() === "cash" || formData.payment_method.toLowerCase()== "cash") && (transType.toLowerCase() === "out" || formData.transaction_type.toLowerCase()== "out") && (formData.payment_method.toLowerCase()=== "cash" && formData.transaction_type.toLowerCase()== "out")){
+      setIsDisabled(true)
+    } else{
+      setIsDisabled(false)
+    }
+  })
 
 
  
