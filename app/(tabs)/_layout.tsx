@@ -11,9 +11,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEditContext } from "../context/editIdContext";
 
 export default function TabLayout() {
-
   const {setEditingId} = useEditContext()
-
   React.useEffect(() => {
     const onBackPress = () => {
       Alert.alert("Exit App", "Are you sure you want to exit?", [

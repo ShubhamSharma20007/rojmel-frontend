@@ -30,7 +30,6 @@ export default function Layout() {
     _retrieveData()
   },[])
 
-
   return (
   <>
   
