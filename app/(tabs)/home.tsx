@@ -180,7 +180,12 @@ const Home = () => {
             <Text style={styles.storeText}>Rojmel Store</Text>
           </View>
         </View> */}
-          <Header title='હેડ' iconName='' />
+          <Header title='હેડ અને ઓપનીંગ બેલેન્સ' iconName='' />
+          {/* notes */}
+        <View style={styles.note}>
+        <Ionicons name="information-circle" size={18} color="#1a237e" />
+          <Text style={styles.noteText}>નોંધ: હેડ અને ઓપનીંગ બેલેન્સ ઉમેરો</Text>
+        </View>
 
         {/* Rest of your existing code */}
        <View style={styles.balanceContainer}>
@@ -282,7 +287,7 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 80,
+                          gap: 22,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
@@ -304,6 +309,7 @@ const Home = () => {
                           }
                           keyboardType="default"
                           placeholder="Head Name"
+                          readOnly={editedValues.head_name === 'પદર' || editedValues.head_name === 'વ્યાજ'}
                         />
                       </View>
   
@@ -311,11 +317,11 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 16,
+                          gap: 17,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
-                        બેંક ની ઓપનીંગ બેલેન્સ :{" "}
+                        બેંક બેલેન્સ :{" "}
                         </Text>
                         <TextInput
                           style={{
@@ -339,11 +345,11 @@ const Home = () => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 10,
+                          gap: 11,
                         }}
                       >
                         <Text style={{ fontWeight: "500", fontSize: 13 }}>
-                        રોકડ ની ઓપનીંગ બેલેન્સ :{" "}
+                        રોકડ બેલેન્સ :{" "}
                         </Text>
                         <TextInput
                           style={{
@@ -467,7 +473,7 @@ const Home = () => {
           style={styles.addButton}
           onPress={() => router.push("/forms/personAddForm")}
         >
-          <Text style={styles.addButtonText}>હેડ બનાવો</Text>
+          <Text style={styles.addButtonText}>હેડ અને ઓપનીંગ બેલેન્સ ઉમેરો</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -729,6 +735,25 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  note:{
+    backgroundColor:'#E3F2FD',
+    paddingHorizontal:10,
+    paddingVertical:10,
+    flexDirection:'row',
+    alignItems:'center',
+  },
+  noteText:{
+    fontSize:13,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+    overflow: 'hidden',
+    color: '#333',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
+    fontWeight: '500',
   },
 });
 

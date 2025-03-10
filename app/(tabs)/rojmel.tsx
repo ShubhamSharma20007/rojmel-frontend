@@ -84,8 +84,8 @@ const Rojmel = () => {
 
   const paymentMethodGujarati: Record<string, string> = {
     cash: "રોકડ",
-    cheque: "ચેક",
-    online: "ઓનલાઇન",
+    cheque: "ચેક/PFMS",
+    online: "ઓનલાઈન/બેંક",
   };
 
   return (
@@ -224,7 +224,7 @@ const Rojmel = () => {
           </ScrollView>
           : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ textAlign: 'center', fontSize: 20, color: 'gray' }}>
-            કોઈ લેણદેણ મળ્યું નથી
+            કોઈ રોજમેળ મળ્યું નથી
             </Text>
           </View>
       }

@@ -10,8 +10,8 @@ import {
   useWindowDimensions,
   Alert,
 } from "react-native";
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import * as Notifications from "expo-notifications";
 import Header from "../components/header";
 import {
@@ -22,14 +22,18 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Link, useFocusEffect, useRouter } from "expo-router";
-import { downloadReport, getHeads, getLedger, khatavahiReport } from "@/helper/api-communication";
+import {
+  downloadReport,
+  getHeads,
+  getLedger,
+  khatavahiReport,
+} from "@/helper/api-communication";
 import { TransactionFormData } from "@/types/TransactionFormType";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getLocalStorage } from "@/helper/asyncStorage";
 import CustomButton from "../components/customButton";
 import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
-
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -42,23 +46,20 @@ Notifications.setNotificationHandler({
 const Report = () => {
   const [open, setOpen] = React.useState(false);
   const [fixOpen, SetfixOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string>('')
-  const [fixValue, setFixValue] = React.useState<string>('')
-  const [items, setItems] = React.useState<{ value: string, label: string }[]>([]);
+  const [value, setValue] = React.useState<string>("");
+  const [fixValue, setFixValue] = React.useState<string>("");
+  const [items, setItems] = React.useState<{ value: string; label: string }[]>(
+    []
+  );
   const [fixItems, fixSetItems] = React.useState([
-    { label: 'કેશબુક', value: 'cashbook' },
-    { label: 'પરિશિષ્ટ-૯', value: 'appendix9' },
-    { label: 'પરિશિષ્ટ-૧૦', value: 'appendix10' },
-    { label: 'ખાતાવહી', value: 'khatavahi' },
-    { label: 'બિલ રજિસ્ટર', value: 'billregister' },
-    { label: 'ગ્રાન્ટ રજિસ્ટર', value: 'grantregister' },
-    { label: 'ચેક રજિસ્ટર', value: 'chequeregister' },
+    { label: "કેશબુક", value: "cashbook" },
+    { label: "પરિશિષ્ટ-૯", value: "appendix9" },
+    { label: "પરિશિષ્ટ-૧૦", value: "appendix10" },
+    { label: "ખાતાવહી", value: "khatavahi" },
+    { label: "બિલ રજિસ્ટર", value: "billregister" },
+    { label: "ગ્રાન્ટ રજિસ્ટર", value: "grantregister" },
+    { label: "ચેક રજિસ્ટર", value: "chequeregister" },
   ]);
-
-
-
-
-
 
   // useEffect(() => {
   //   registerForPushNotificationsAsync().then(token => token && setExpoPushToken(token));
@@ -82,22 +83,25 @@ const Report = () => {
   //   };
   // }, []);
 
-
   useEffect(() => {
     (async () => {
       const getHeadsData = await getHeads();
       if (getHeadsData?.data?.length > 0) {
-        const modifiedData = getHeadsData?.data.map((item: any, idx: number) => ({ label: item?.head_name, value: item?._id }))
-        setItems(modifiedData)
+        const modifiedData = getHeadsData?.data.map(
+          (item: any, idx: number) => ({
+            label: item?.head_name,
+            value: item?._id,
+          })
+        );
+        setItems(modifiedData);
       }
     })();
   }, [fixValue === "khatavahi"]);
 
-
   const handleDownloadReport = async () => {
     try {
       let response;
-      if (fixValue !== 'khatavahi') {
+      if (fixValue !== "khatavahi") {
         response = await downloadReport(fixValue);
       } else {
         response = await khatavahiReport(fixValue, value as string);
@@ -105,10 +109,10 @@ const Report = () => {
       // download the file
 
       const url = response!.request.responseURL;
-      console.log(url,1212)
+      console.log(url, 1212);
       const fileUri = FileSystem.documentDirectory + `${fixValue}.pdf`;
-      console.log({ fileUri, url })
-      const token = await getLocalStorage('auth_token')
+      console.log({ fileUri, url });
+      const token = await getLocalStorage("auth_token");
       const { uri } = await FileSystem.downloadAsync(url, fileUri, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -118,40 +122,44 @@ const Report = () => {
       // Send a notification
 
       // save the file to the device
-      if (Platform.OS === 'android') {
-        const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (Platform.OS === "android") {
+        const permission =
+          await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
         if (permission.granted) {
-          const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-          await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, `${fixValue}.pdf`, 'application/pdf')
-            .then(async (fileUri) => {
-              await FileSystem.writeAsStringAsync(fileUri, base64, { encoding: FileSystem.EncodingType.Base64 });
-              console.log('File copied to:', fileUri);
-              // for sharing the file 
-              //  Sharing.shareAsync(uri);
-              Toast.show({
-                type: "success",
-                text1: "✅ સફળતા",
-                text2: "ફાઇલ સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ",
-                text2Style: {
-                  fontSize: 12,
-                },
-              });              
-              Notifications.scheduleNotificationAsync({
-                content: {
-                  title: 'ફાઇલ ડાઉનલોડ થઈ ગઈ',
-                  body: 'તમારા PDF ને સફળતાપૂર્વક ડાઉનલોડ કરવામાં આવ્યો છે',
-                  data: { url: uri },
-                },
-                trigger: null,
-              });              
-            })
+          const base64 = await FileSystem.readAsStringAsync(uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          await FileSystem.StorageAccessFramework.createFileAsync(
+            permission.directoryUri,
+            `${fixValue}.pdf`,
+            "application/pdf"
+          ).then(async (fileUri) => {
+            await FileSystem.writeAsStringAsync(fileUri, base64, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+            console.log("File copied to:", fileUri);
+            // for sharing the file
+            //  Sharing.shareAsync(uri);
+            Toast.show({
+              type: "success",
+              text1: "✅ સફળતા",
+              text2: "ફાઇલ સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ",
+              text2Style: {
+                fontSize: 12,
+              },
+            });
+            Notifications.scheduleNotificationAsync({
+              content: {
+                title: "ફાઇલ ડાઉનલોડ થઈ ગઈ",
+                body: "તમારા PDF ને સફળતાપૂર્વક ડાઉનલોડ કરવામાં આવ્યો છે",
+                data: { url: uri },
+              },
+              trigger: null,
+            });
+          });
         }
-
       }
-
-
-
-    } catch (err:any) {
+    } catch (err: any) {
       Toast.show({
         type: "error",
         text1: "❌ ભૂલ",
@@ -161,51 +169,63 @@ const Report = () => {
         text2: err?.message,
       });
     }
-
-  }
-
-
+  };
 
   //  handle the description detailts
   let description;
   switch (fixValue) {
     case "khatavahi":
-      description = "Khatavahi Report provides a detailed account of financial transactions, including debits and credits, to track expenses and income over a specific period for better financial management.";
+      description =
+        "Khatavahi Report provides a detailed account of financial transactions, including debits and credits, to track expenses and income over a specific period for better financial management.";
       break;
     case "ledger":
-      description = "Ledger Report records all financial transactions categorized into different accounts, helping businesses track their financial health and maintain accurate bookkeeping records efficiently.";
+      description =
+        "Ledger Report records all financial transactions categorized into different accounts, helping businesses track their financial health and maintain accurate bookkeeping records efficiently.";
       break;
     case "cashbook":
-      description = "Cashbook Report tracks daily cash inflows and outflows, providing an overview of cash transactions to ensure accurate financial reconciliation and cash flow management.";
+      description =
+        "Cashbook Report tracks daily cash inflows and outflows, providing an overview of cash transactions to ensure accurate financial reconciliation and cash flow management.";
       break;
     case "bankbook":
-      description = "Bankbook Report maintains a record of all banking transactions, including deposits, withdrawals, and transfers, to track account balances and ensure financial accuracy.";
+      description =
+        "Bankbook Report maintains a record of all banking transactions, including deposits, withdrawals, and transfers, to track account balances and ensure financial accuracy.";
       break;
     case "sales":
-      description = "Sales Report summarizes revenue generated from sales transactions, providing insights into business performance, trends, and customer purchasing behavior for strategic decision-making.";
+      description =
+        "Sales Report summarizes revenue generated from sales transactions, providing insights into business performance, trends, and customer purchasing behavior for strategic decision-making.";
       break;
     case "appendix9":
-      description = "Appendix 9 Report contains structured financial data and supporting documentation for compliance, auditing, and regulatory reporting purposes, ensuring transparency and accuracy in financial statements.";
+      description =
+        "Appendix 9 Report contains structured financial data and supporting documentation for compliance, auditing, and regulatory reporting purposes, ensuring transparency and accuracy in financial statements.";
       break;
     case "appendix10":
-      description = "Appendix 10 Report provides additional financial details and records required for audits, regulatory filings, or internal reviews, ensuring clarity and completeness of financial reports.";
+      description =
+        "Appendix 10 Report provides additional financial details and records required for audits, regulatory filings, or internal reviews, ensuring clarity and completeness of financial reports.";
       break;
     case "billregister":
-      description = "Bill Register Report keeps track of issued invoices and bills, helping businesses manage outstanding payments, track due dates, and maintain proper financial records.";
+      description =
+        "Bill Register Report keeps track of issued invoices and bills, helping businesses manage outstanding payments, track due dates, and maintain proper financial records.";
       break;
     case "grantregister":
-      description = "Grant Register Report documents grant allocations, expenditures, and balances, ensuring transparency in fund utilization and compliance with financial guidelines.";
+      description =
+        "Grant Register Report documents grant allocations, expenditures, and balances, ensuring transparency in fund utilization and compliance with financial guidelines.";
       break;
     case "chequeregister":
-      description = "Cheque Register Report records issued and received cheques, tracking payments and ensuring proper reconciliation of financial transactions with bank statements.";
+      description =
+        "Cheque Register Report records issued and received cheques, tracking payments and ensuring proper reconciliation of financial transactions with bank statements.";
       break;
   }
 
   return (
     <View style={[styles.container]}>
       {/* Header */}
-    <StatusBar translucent style="light"/>
-      <Header iconName="" title="રિપોર્ટ્સ" key={'pay'} />
+      <StatusBar translucent style="light" />
+      <Header iconName="" title="રિપોર્ટ્સ" key={"pay"} />
+      {/* notes */}
+      <View style={styles.note}>
+        <Ionicons name="information-circle" size={18} color="#1a237e" />
+        <Text style={styles.noteText}>નોંધ: અહીંથી તમે 7 પ્રકારના રિપોર્ટને ડાઉનલોડ કરી શકો છો. રિપોર્ટને ડાઉનલોડ કરવા નીચેના બટન પર ક્લિક કરો.</Text>
+      </View>
 
       {/*  List of Entries */}
       <View style={{ flex: 1, padding: 10 }}>
@@ -217,19 +237,20 @@ const Report = () => {
           items={fixItems}
           setOpen={SetfixOpen}
           setValue={(value) => {
-            setFixValue(value)
+            setFixValue(value);
           }}
-
           setItems={fixSetItems}
-          placeholder={'અહેવાલ પ્રકાર પસંદ કરો'}
-          style={[styles.input, {
-            backgroundColor: "#F1F4FF",
-            borderColor: '#d1d9ff',
-            borderRadius: 4,
-            borderWidth: 1,
-            height: 50,
-
-          }]}
+          placeholder={"અહેવાલ પ્રકાર પસંદ કરો"}
+          style={[
+            styles.input,
+            {
+              backgroundColor: "#F1F4FF",
+              borderColor: "#d1d9ff",
+              borderRadius: 4,
+              borderWidth: 1,
+              height: 50,
+            },
+          ]}
           dropDownContainerStyle={{
             backgroundColor: "#F1F4FF",
             borderColor: "#d1d9ff",
@@ -237,96 +258,90 @@ const Report = () => {
           }}
         />
 
-        {
-          fixValue === "khatavahi" && (
-            <DropDownPicker
-              open={open}
-              // value={formData.head_id}
-              items={items}
-              setOpen={setOpen}
-              value={value}
-              setValue={(id) => {
-                setValue(id)
-              }
-              }
-              searchable={true}
-              searchContainerStyle={{
+        {fixValue === "khatavahi" && (
+          <DropDownPicker
+            open={open}
+            // value={formData.head_id}
+            items={items}
+            setOpen={setOpen}
+            value={value}
+            setValue={(id) => {
+              setValue(id);
+            }}
+            searchable={true}
+            searchContainerStyle={{
+              backgroundColor: "#F1F4FF",
+              borderWidth: 0,
+              marginBottom: Platform.OS === "ios" ? 10 : 0,
+              borderColor: "#F1F4FF",
+            }}
+            style={[
+              styles.input,
+              {
                 backgroundColor: "#F1F4FF",
-                borderWidth: 0,
-                marginBottom: Platform.OS === 'ios' ? 10 : 0,
-                borderColor: "#F1F4FF",
-
-
-              }}
-              style={[styles.input, {
-                backgroundColor: "#F1F4FF",
-                borderColor: '#d1d9ff',
+                borderColor: "#d1d9ff",
                 borderRadius: 4,
                 borderWidth: 1,
                 height: 50,
-
-              }]}
-              dropDownContainerStyle={{
-                backgroundColor: "#F1F4FF",
-                borderColor: "#d1d9ff",
-                borderTopWidth: 0,
-              }}
-              setItems={setItems}
-              placeholder="હેડ પસંદ કરો"
-
-
-              searchTextInputStyle={{
-                borderWidth: 0
-              }}
-              searchPlaceholder='હેડ ના નામથી શોધો'
-
-
-              listMode="SCROLLVIEW"
-              scrollViewProps={{
-                nestedScrollEnabled: true,
-              }}
-              zIndex={3000}
-              zIndexInverse={1000}
-            />
-          )
-        }
+              },
+            ]}
+            dropDownContainerStyle={{
+              backgroundColor: "#F1F4FF",
+              borderColor: "#d1d9ff",
+              borderTopWidth: 0,
+            }}
+            setItems={setItems}
+            placeholder="હેડ પસંદ કરો"
+            searchTextInputStyle={{
+              borderWidth: 0,
+            }}
+            searchPlaceholder="હેડ ના નામથી શોધો"
+            listMode="SCROLLVIEW"
+            scrollViewProps={{
+              nestedScrollEnabled: true,
+            }}
+            zIndex={3000}
+            zIndexInverse={1000}
+          />
+        )}
 
         {/*  description */}
 
-        <Text style={{
-          alignContent: 'center',
-          fontSize: 14,
-        }}>
-          
-        </Text>
-        <View style={{
-          width: '100%',
-          flex:1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-          <Image style={{
-            width: useWindowDimensions().width - 100,
-            height: '100%',
-            objectFit: "contain",
-            alignSelf: 'center',
-
-          }} source={require('../../assets/images/report_image.png')} />
+        <Text
+          style={{
+            alignContent: "center",
+            fontSize: 14,
+          }}
+        ></Text>
+        <View
+          style={{
+            width: "100%",
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            style={{
+              width: useWindowDimensions().width - 100,
+              height: "100%",
+              objectFit: "contain",
+              alignSelf: "center",
+            }}
+            source={require("../../assets/images/report_image.png")}
+          />
         </View>
-
       </View>
 
       {/* View Report Button */}
       <View
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          margin: 10
-
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          margin: 10,
         }}
       >
-
         {/* <TouchableOpacity
           disabled={fixValue.length === 0}
           style={styles.addButton}
@@ -334,18 +349,19 @@ const Report = () => {
         >
           <Text style={styles.addButtonText}>DOWNLOAD REPORT</Text>
         </TouchableOpacity> */}
-        <CustomButton handlePress={handleDownloadReport} text="PDF જનરેટ કરો" key='download_report' />
+        <CustomButton
+          handlePress={handleDownloadReport}
+          text="PDF ડાઉનલોડ કરો"
+          key="download_report"
+        />
       </View>
     </View>
   );
 };
 
-
-
 const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
-
     padding: 10,
     alignItems: "center",
     borderBottomWidth: 1,
@@ -384,8 +400,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: "#1a237e",
-    width: '100%',
-
+    width: "100%",
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
@@ -399,7 +414,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 50,
     backgroundColor: "#F1F4FF",
-    borderColor: '#d1d9ff',
+    borderColor: "#d1d9ff",
     borderRadius: 4,
     paddingRight: 10,
     color: "black",
@@ -408,7 +423,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   paymentMethod: {
-
     borderRadius: 3,
     paddingHorizontal: 4,
     backgroundColor: "#E3F2FD",
@@ -417,11 +431,10 @@ const styles = StyleSheet.create({
   },
   paymentText: {
     color: "#1976D2",
-    textTransform: 'capitalize',
-    fontWeight: 'semibold',
+    textTransform: "capitalize",
+    fontWeight: "semibold",
     fontSize: 13,
-  }
-  ,
+  },
   balanceCard: {
     backgroundColor: "#fff",
     borderBottomWidth: 1,
@@ -432,7 +445,6 @@ const styles = StyleSheet.create({
   balanceAmount: {
     fontSize: 19,
     fontWeight: "bold",
-
   },
   balanceLabel: {
     fontSize: 12,
@@ -466,7 +478,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   dateSection: {
-
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -477,13 +488,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eee",
     justifyContent: "space-between",
     alignItems: "center",
-
   },
   headtext: {
     fontSize: 16,
     fontWeight: "bold",
     marginVertical: 1,
-    textTransform: 'capitalize'
+    textTransform: "capitalize",
   },
   entryCount: {
     flexDirection: "row",
@@ -501,20 +511,19 @@ const styles = StyleSheet.create({
     flex: 1,
 
     fontWeight: "bold",
-    textAlign: 'center'
+    textAlign: "center",
   },
   inAmount: {
     color: "#4CAF50",
     fontWeight: "bold",
     flex: 1,
-    textAlign: 'center'
+    textAlign: "center",
   },
   emptyState: {
-
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
-    textAlign: 'center'
+    textAlign: "center",
   },
   emptyStateImage: {
     width: 200,
@@ -563,6 +572,25 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  note:{
+    backgroundColor:'#E3F2FD',
+    paddingHorizontal:10,
+    paddingVertical:10,
+    flexDirection:'row',
+    alignItems:'center',
+  },
+  noteText:{
+    fontSize:13,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+    overflow: 'hidden',
+    color: '#333',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
+    fontWeight: '500',
   },
 });
 

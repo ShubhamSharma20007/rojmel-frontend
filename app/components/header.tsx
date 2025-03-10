@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
         paddingTop: 40,
         backgroundColor: "#1a237e",
         paddingVertical: 20,
-        marginBottom: 10,
     },
     storePicker: {
         flexDirection: "row",

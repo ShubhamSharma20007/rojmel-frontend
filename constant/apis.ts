@@ -50,6 +50,7 @@ export const PURCHASED_HISTORY = `${API_ROUTE}/${SUBSCRIPTION}/history`
 const CMS = 'cms'
 export const ABOUT_US = `${API_ROUTE}/${CMS}/about-us`
 export const PRIVACY_POLICY = `${API_ROUTE}/${CMS}/privacy-policy`
+export const TERMS_CONDITIONS = `${API_ROUTE}/${CMS}/terms-conditions`
 
 // Profile section
 const PROFILE = 'profile' 

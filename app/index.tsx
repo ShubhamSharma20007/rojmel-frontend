@@ -109,7 +109,7 @@ export default function Login() {
 
   return (
     <>
-    {/* <Redirect href={"/forms/addPaymentForm"}/> */}
+    {/* <Redirect href={"/components/subscription"}/> */}
       <ImageBackground
         source={require("../assets/images/background_image.jpg")}
         style={styles.backgroundImage}

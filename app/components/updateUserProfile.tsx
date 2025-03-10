@@ -241,6 +241,7 @@ export default function Register() {
           flex: 1,
           backgroundColor: "rgba(255, 255, 255, 0.7)",
           paddingHorizontal: 20,
+          marginTop: 20
         }}
       >
       

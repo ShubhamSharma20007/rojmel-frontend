@@ -173,7 +173,7 @@ const PersonAddForm = () => {
       {/* <View style={styles.header}>
         <Text style={styles.storeText}>Add Transaction</Text>
       </View> */}
-      <Header title='નવા હેડ અને ઓપનીંગ બેલેન્સ ઉમેરો' iconName='arrow-back' backPath={true} />
+      <Header title='હેડ અને ઓપનીંગ બેલેન્સ ઉમેરો' iconName='arrow-back' backPath={true} />
       <View style={styles.content}>
         <View style={styles.inputRow}>
           <TextInput

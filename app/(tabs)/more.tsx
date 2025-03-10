@@ -39,7 +39,7 @@ const More = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="પ્રોફાઇલ" key={"profile"} iconName="" />
+      <Header title="પ્રોફાઇલ અને સેટિંગ્સ" key={"profile"} iconName="" />
 
       <ScrollView>
         <View style={styles.profileSection}>
@@ -59,17 +59,18 @@ const More = () => {
 
           <View style={styles.menuItems}>
             {[
+              { icon: "calendar", title: "નાણાકીય વર્ષ", path: "/components/financialYearChange" },
               { icon: "card", title: "યોજનાઓ", path: "/components/subscription" },
-              { icon: "card", title: "યોજના બદલો", path: "/components/financialYearChange" },
-              { icon: "receipt", title: "યોજનાઓનો ઇતિહાસ", path: "/components/purchaseHistory" },
-              { icon: "shield-checkmark", title: "કેવી રીતે ઉપયોગ કરવો", path: "/components/privacyPolicy" },
-              { icon: "information-circle", title: "રોજમેલ વિશે", path: "/components/aboutUs" },
-              { icon: "headset", title: "અમને કૉલ કરો", path: "/components/helpAndSupport" },
+              { icon: "receipt", title: "બિલિંગ ઇતિહાસ", path: "/components/purchaseHistory" },
               { icon: "help-circle", title: "કેવી રીતે ઉપયોગ કરવો ?", path: "https://www.youtube.com/watch?v=veyoAuaw_8w" },
+              { icon: "call", title: "અમને કૉલ કરો", path: "/components/helpAndSupport" },
+              { icon: "information-circle", title: "અમારા વિશે", path: "/components/aboutUs" },
+              { icon: "shield-checkmark", title: "કેવી રીતે ઉપયોગ કરવો", path: "/components/privacyPolicy" },
+              { icon: "document-text", title: "નિયમ અને શરતો", path: "/components/termsAndCondition" }
             ].map((item: any, index) => (
               <TouchableOpacity key={index} style={styles.menuItem} onPress={() => handleRedirection(item.path)}>
                 <View style={styles.menuLeft}>
-                  <Ionicons name={item.icon} size={24} color="#1976D2" />
+                  <Ionicons name={item.icon} size={24} color="#1a237e" />
                   <Text style={styles.menuText}>{item.title}</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={24} color="#666" />
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 30,
-    backgroundColor: "#1976D2",
+    backgroundColor: "#1a237e",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
@@ -128,13 +129,13 @@ const styles = StyleSheet.create({
   },
   editButton: {
     borderWidth: 1,
-    borderColor: "#1976D2",
+    borderColor: "#1a237e",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 4,
   },
   editButtonText: {
-    color: "#1976D2",
+    color: "#1a237e",
   },
   menuItems: {
     gap: 16,

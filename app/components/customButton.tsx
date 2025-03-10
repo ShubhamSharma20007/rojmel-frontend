@@ -7,9 +7,10 @@ type CustomButtonProps = {
   handlePress: () => Promise<void>;
   bg?: string;
   customStyle?: any;
+  isDisabled?: boolean;
 };
 
-const CustomButton: React.FC<CustomButtonProps> = ({ text, handlePress,bg='#1a237e',customStyle }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ text, handlePress,bg='#1a237e',customStyle,isDisabled=false }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const onPress = async () => {
@@ -25,12 +26,12 @@ const CustomButton: React.FC<CustomButtonProps> = ({ text, handlePress,bg='#1a23
     <TouchableOpacity
       style={[
         styles.button,
-        { backgroundColor: loading ? "#ccc" : bg },
+        { backgroundColor: loading ? "#ccc" : customStyle ? customStyle?.backgroundColor:bg },
         customStyle
       ]}
       onPress={onPress}
       activeOpacity={0.8}
-      disabled={loading} 
+      disabled={loading || isDisabled} 
     >
       {loading ? (
         <ActivityIndicator color="white" /> 

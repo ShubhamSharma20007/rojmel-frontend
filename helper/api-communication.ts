@@ -1,6 +1,6 @@
 import { Instance } from "@/lib/instance";
 import Toast from "react-native-toast-message";
-import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT, LIST_SUBSCRIPTION, CREATE_SUBSCRIPTION_ORDER, ABOUT_US, PRIVACY_POLICY, PURCHASED_HISTORY, USER_DETAILS, FINANCIAL_YEAR_LISTING, FINANCIAL_YEAR } from "@/constant/apis";
+import { FORGET_PASSWORD, RESET_PASSWORD, CREATE_HEADS, GET_HEADS, DELETE_HEAD, CREATE_LEDGER, GET_LEDGER, UPDATE_LEDGER, DELETE_LEDGER, DOWNLOAD_REPORT, LIST_SUBSCRIPTION, CREATE_SUBSCRIPTION_ORDER, ABOUT_US, PRIVACY_POLICY, PURCHASED_HISTORY, USER_DETAILS, FINANCIAL_YEAR_LISTING, FINANCIAL_YEAR, TERMS_CONDITIONS } from "@/constant/apis";
 import { HeadInferface } from "@/types/headType"
 import { getLocalStorage } from "@/helper/asyncStorage"
 import { TransactionFormData } from '../types/TransactionFormType';
@@ -528,6 +528,26 @@ export const getAboutUs = async () => {
 export const getPrivacyPolicy = async () => {
     try {
         const req = await Instance.get(PRIVACY_POLICY)
+        return req.data
+    } catch (err: any) {
+        console.warn("Error:", err.message);
+        if (err.response) {
+            Toast.show({
+                type: "error",
+                text1: "❌ Error",
+                text2Style: {
+                    fontSize: 12,
+                },
+                text2: err.response.data.message,
+            });
+        }
+
+    }
+}
+
+export const getTermsAndConditions = async () => {
+    try {
+        const req = await Instance.get(TERMS_CONDITIONS)
         return req.data
     } catch (err: any) {
         console.warn("Error:", err.message);

@@ -1,26 +1,38 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import Header from './header';
+import React from "react";
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import Header from "./header";
+import { Ionicons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
 
 const HelpAndSupport = () => {
   return (
     <>
       <Header title="અમને કૉલ કરો" iconName="arrow-back" backPath />
       <ScrollView style={styles.container}>
-        {/* <Text style={styles.title}>Help & Support</Text> */}
-
-        {/* <Text style={styles.content}>
-          If you need any assistance, feel free to reach out to us. We are here to help you with any questions or issues you may have.
-        </Text> */}
-
         <View style={styles.infoContainer}>
-          <Text style={styles.infoTitle}>કોલ કરો</Text>
-          {/* <Text style={styles.infoText}>
-            📧 Email: <Text style={styles.highlight}>support@example.com</Text>
-          </Text> */}
-          <Text style={styles.infoText}>
-            📞 અમને કૉલ કરો: <Text style={styles.highlight}>+91 9876543210</Text>
-          </Text>
+          {/* Call Section */}
+          <TouchableOpacity 
+            style={styles.card} 
+            onPress={() => Linking.openURL("tel:+919723963863")}
+          >
+            <Ionicons name="call" size={30} color="white" style={styles.icon} />
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>અમને કૉલ કરો</Text>
+              <Text style={styles.number}>+91 97239 63863</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* WhatsApp Section */}
+          <TouchableOpacity 
+            style={[styles.card, styles.whatsappCard]} 
+            onPress={() => Linking.openURL("https://wa.me/919723963863")}
+          >
+            <Ionicons name="logo-whatsapp" size={30} color="white" style={styles.icon} />
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>અમને Whatsapp કરો</Text>
+              <Text style={styles.number}>+91 97239 63863</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </>
@@ -32,41 +44,49 @@ export default HelpAndSupport;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: "#f8f9fa",
   },
-  title: {
+  heading: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 15,
-    color: '#333',
-  },
-  content: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 15,
-    color: '#555',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#1a237e",
+    marginBottom: 20,
   },
   infoContainer: {
-    marginTop: 20,
+    marginTop: 10,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1a237e",
     padding: 15,
-    borderRadius: 8,
-    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    marginBottom: 15,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-  infoTitle: {
+  whatsappCard: {
+    backgroundColor: "#25D366",
+  },
+  icon: {
+    marginRight: 15,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  title: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#1a237e',
+    fontWeight: "bold",
+    color: "#fff",
   },
-  infoText: {
+  number: {
     fontSize: 16,
-    marginBottom: 5,
-    color: '#333',
-  },
-  highlight: {
-    fontWeight: 'bold',
-    color: '#1a237e',
+    fontWeight: "600",
+    color: "#f8f9fa",
   },
 });
