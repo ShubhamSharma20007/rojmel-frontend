@@ -9,24 +9,27 @@ import Entypo from "@expo/vector-icons/Entypo";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEditContext } from "../context/editIdContext";
+import { useFocusEffect } from "expo-router";
 
 export default function TabLayout() {
   const {setEditingId} = useEditContext()
-  React.useEffect(() => {
-    const onBackPress = () => {
-      Alert.alert("Exit App", "Are you sure you want to exit?", [
-        { text: "Cancel", style: "cancel" },
-        { text: "Exit", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true; // Prevent default back action
-    };
+ useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert("Exit App", "Are you sure you want to exit?", [
+          { text: "Cancel", style: "cancel" },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true; 
+      };
 
-    BackHandler.addEventListener("hardwareBackPress", onBackPress);
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    };
-  }, []);
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [])
+  );
 
   const [index, setIndex] = React.useState(0);
 

@@ -13,7 +13,7 @@ import {
 } from "@expo/vector-icons";
 import Header from "../components/header";
 import { useRouter} from "expo-router";
-import {getLocalStorage} from "../../helper/asyncStorage"
+import {getLocalStorage, removeLocalStorage} from "../../helper/asyncStorage"
 import {handleSplitName} from "../../helper/splitName"
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -25,9 +25,9 @@ const More = () => {
     return router.push(pathname);
   }
 
-  function handleLogout() {
-    // removeLocalStorage('');
-    router.push("/"); // Redirect to login page
+  async function handleLogout() {
+    await removeLocalStorage('auth_token');
+    return router.push("/"); 
   }
 
   useFocusEffect(()=>{

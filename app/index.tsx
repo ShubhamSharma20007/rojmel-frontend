@@ -31,24 +31,6 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        Alert.alert("Exit App", "Are you sure you want to exit?", [
-          { text: "Cancel", style: "cancel" },
-          { text: "Exit", onPress: () => BackHandler.exitApp() },
-        ]);
-        return true; // Prevent default back action
-      };
-
-      BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-      return () => {
-        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-      };
-    }, [])
-  );
-
   const handleSubmit = async () => {
     try {
   
