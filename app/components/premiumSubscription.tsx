@@ -30,13 +30,13 @@ const ReportLists: listType[] = [
       { title: 'Download Reports' },
     ],
     reports : [
-      { title: 'Cashbook Report' },
-      { title: 'Appendix9 Report' },
-      { title: 'Appendix10 Report' },
-      { title: 'Khatavahi Report' },
-      { title: 'Billregister Report' },
-      { title: 'Grantregister Report' },
-      { title: 'Chequeregister Report' },
+      { title: "કેશબુક રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૯ રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૧૦ રિપોર્ટ્" },
+      { title: "ખાતાવહી રિપોર્ટ્" },
+      { title: "બિલ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ગ્રાન્ટ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ચેક રજિસ્ટર રિપોર્ટ્" },
     ]
   },
   {
@@ -48,13 +48,13 @@ const ReportLists: listType[] = [
       { title: 'Download Reports' },
     ],
     reports : [
-      { title: 'Cashbook Report' },
-      { title: 'Appendix9 Report' },
-      { title: 'Appendix10 Report' },
-      { title: 'Khatavahi Report' },
-      { title: 'Billregister Report' },
-      { title: 'Grantregister Report' },
-      { title: 'Chequeregister Report' },
+      { title: "કેશબુક રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૯ રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૧૦ રિપોર્ટ્" },
+      { title: "ખાતાવહી રિપોર્ટ્" },
+      { title: "બિલ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ગ્રાન્ટ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ચેક રજિસ્ટર રિપોર્ટ્" },
     ]
   },
   {
@@ -66,13 +66,13 @@ const ReportLists: listType[] = [
       { title: 'Download Reports' },
     ],
     reports : [
-      { title: 'Cashbook Report' },
-      { title: 'Appendix9 Report' },
-      { title: 'Appendix10 Report' },
-      { title: 'Khatavahi Report' },
-      { title: 'Billregister Report' },
-      { title: 'Grantregister Report' },
-      { title: 'Chequeregister Report' },
+      { title: "કેશબુક રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૯ રિપોર્ટ્" },
+      { title: "પરિશિષ્ટ-૧૦ રિપોર્ટ્" },
+      { title: "ખાતાવહી રિપોર્ટ્" },
+      { title: "બિલ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ગ્રાન્ટ રજિસ્ટર રિપોર્ટ્" },
+      { title: "ચેક રજિસ્ટર રિપોર્ટ્" },
     ]
   },
 ];
@@ -168,7 +168,7 @@ const PremiumSubscription = () => {
         </View>
         
         {/* Title Section */}
-        <Text style={styles.titleText}>Subscription Plan's</Text>
+        <Text style={styles.titleText}>તમારી યોજના પસંદ કરો</Text>
         <Text style={styles.subtitleText}> {
           subscriptionPlans[selectedPlan]?.description
         }</Text>
@@ -196,7 +196,7 @@ const PremiumSubscription = () => {
                 </View>
               )}
               <Text style={styles.monthsText}>₹{plan.amount}</Text>
-              <Text style={styles.monthsLabelText}>Plan</Text>
+              <Text style={styles.monthsLabelText}>યોજના</Text>
               {/* <Text style={styles.priceText}>₹{plan.amount}/mt</Text> */}
             </TouchableOpacity>
             )
@@ -212,13 +212,13 @@ const PremiumSubscription = () => {
 </Text>
 
         </TouchableOpacity> */}
-      <CustomButton customStyle={styles.subscribeButton} text={`Purchase Plan`} handlePress={async()=>{
+      <CustomButton customStyle={styles.subscribeButton} text={`ખરીદી કરો`} handlePress={async()=>{
        await handlePayment(subscriptionPlans[selectedPlan]?.amount)
       }}/>
         
         {/* Billing Info */}
         <View style={styles.billingInfoContainer}>
-          <Text style={[styles.sectionTitle,{marginBottom:5, fontSize:17}]}>What We Will Provide</Text>
+          <Text style={[styles.sectionTitle,{marginBottom:5, fontSize:17}]}>અમે શું પ્રદાન કરીશું</Text>
 
           <View>
         {/* {ReportLists[selectedPlan]?.features
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   billingInfoContainer: {
     marginBottom: 20,
     alignSelf: 'center',  // Centers the container itself
-    width: '55%',  // Adjust width as needed
+    width: '50%',  // Adjust width as needed
     padding: 10,  
     borderRadius: 10,  
   },

@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 20,
   },
   avatar: {
     width: 50,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a237e",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 16,
+    marginRight: 5,
   },
   avatarText: {
     color: "white",
@@ -124,18 +124,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   businessName: {
-    fontSize: 22,
-    fontWeight: "500",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   editButton: {
     borderWidth: 1,
     borderColor: "#1a237e",
+    backgroundColor: "#1a237e",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 4,
   },
   editButtonText: {
-    color: "#1a237e",
+    color: "white",
+    fontWeight: "bold",
+    letterSpacing: 0.5,
   },
   menuItems: {
     gap: 16,
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff5f5",
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#ffcccc",
+    borderColor: "red",
   },
   logoutText: {
     fontSize: 16,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useReducer } from "react";
 import { Alert, BackHandler, StyleSheet } from "react-native";
 import { BottomNavigation } from "react-native-paper";
 import Home from "./home";
@@ -8,8 +8,12 @@ import Report from "./report";
 import Entypo from "@expo/vector-icons/Entypo";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useEditContext } from "../context/editIdContext";
 
 export default function TabLayout() {
+
+  const {setEditingId} = useEditContext()
+
   React.useEffect(() => {
     const onBackPress = () => {
       Alert.alert("Exit App", "Are you sure you want to exit?", [
@@ -27,6 +31,11 @@ export default function TabLayout() {
   }, []);
 
   const [index, setIndex] = React.useState(0);
+
+  function handlePress() {
+    setEditingId(null)
+  }
+
   const [routes] = React.useState([
     {
       key: "home",
@@ -63,6 +72,9 @@ export default function TabLayout() {
 
   return (
     <BottomNavigation
+    onTabPress={
+      handlePress
+    }
       barStyle={{ backgroundColor: "#E3F2FD" }}
       activeIndicatorStyle={{ backgroundColor: "#1976D2", opacity: 0.4 }}
       navigationState={{ index, routes }}

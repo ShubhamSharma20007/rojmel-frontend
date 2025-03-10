@@ -7,11 +7,12 @@ export const unstable_settings = {
 };
 import Toast from "react-native-toast-message";
 import { getLocalStorage } from "@/helper/asyncStorage";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getHeads } from "@/helper/api-communication";
 import { StatusBar } from "expo-status-bar";
+import { EditIdContextProvider } from "./context/editIdContext";
 
 export default function Layout() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function Layout() {
   <>
   
     <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLIC || ''}>
+    <EditIdContextProvider>
     <CustomerContextProvide>
       {/* <StatusBar style="light"  backgroundColor="transparent"  translucent/> */}
       <GestureHandlerRootView
@@ -79,6 +81,7 @@ export default function Layout() {
         <Toast />
       </GestureHandlerRootView>
     </CustomerContextProvide>
+    </EditIdContextProvider>
     </StripeProvider></>
   );
 }

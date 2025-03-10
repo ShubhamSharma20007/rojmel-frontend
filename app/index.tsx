@@ -20,10 +20,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { removeLocalStorage, setLocalStorage, getLocalStorage } from "@/helper/asyncStorage";
 import CustomButton from "@/app/components/customButton";
 import { CustomTextInput } from "./components/customTextInput";
-
-import { StatusBar } from "expo-status-bar";
-import RazorpayCheckout from "react-native-razorpay";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { getFinancialYears } from "@/helper/api-communication";
 
 export default function Login() {
@@ -55,23 +51,22 @@ export default function Login() {
 
   const handleSubmit = async () => {
     try {
-      if (!inputsValue.identifier || !inputsValue.password) {
-        Toast.show({
-          type: "error",
-          text1: "❌ Error",
-          text2: "Both fields are required!",
-        });
-        return;
-      }
-
+  
       const response = await Instance.post(LOGIN, inputsValue);
       if (response.status === 200 || response.status === 201) {
-        const token = response.data.data.token;
+        const token = response?.data?.data?.token;
+        const userDetail = response?.data?.data?.userDetail || {};
+  
         await removeLocalStorage("auth_token");
         await setLocalStorage("auth_token", token);
-        await setLocalStorage("user_id", response.data.data.userDetail.user_id);
-        await setLocalStorage("school_name", response.data.data.userDetail.school_name);
-        await setLocalStorage("subscription_id", response.data.data.userDetail.current_subscription_id);
+        await setLocalStorage("user_id", userDetail?.user_id || ""); // ✅ Safe default value
+        await setLocalStorage("school_name", userDetail?.school_name || "");
+  
+        // ✅ Only set `subscription_id` if it exists (not `null`)
+        if (userDetail?.current_subscription_id) {
+          await setLocalStorage("subscription_id", userDetail.current_subscription_id);
+        }
+  
         Toast.show({
           visibilityTime: 1000,
           type: "success",
@@ -79,21 +74,28 @@ export default function Login() {
           text2: "Login Successful",
           text2Style: { fontSize: 12 },
           onHide: async () => {
-            if (!response.data.data.userDetail.current_subscription_id) {
+            if (!userDetail?.current_subscription_id) {
               return router.push("/components/premiumSubscription");
             }
             return router.push("/(tabs)/home");
           },
         });
+  
         setInputsValue({ identifier: "", password: "" });
-        // update the current Plan
-        const plan = await getFinancialYears()
-        const { data } = plan;
-        const findPlan= data.find((plan:any)=>plan._id.toString() === response.data.data.userDetail.current_subscription_id.toString())
-        const handleYear = findPlan?.plan_name.split(" ")[1]
-        await setLocalStorage('yearPlan',JSON.stringify(handleYear))
-        
-     
+  
+        // ✅ Only update the current financial year plan if `subscription_id` exists
+        if (userDetail?.current_subscription_id) {
+          const plan = await getFinancialYears();
+          const { data } = plan;
+          
+          const subscriptionId = userDetail.current_subscription_id.toString();
+          const findPlan = data?.find((plan: any) => plan._id?.toString() === subscriptionId);
+  
+          if (findPlan) {
+            const handleYear = findPlan?.plan_name?.split(" ")[1] || "";
+            await setLocalStorage("yearPlan", JSON.stringify(handleYear));
+          }
+        }
       }
     } catch (err: any) {
       console.log("Error:", err);
@@ -105,6 +107,7 @@ export default function Login() {
       });
     }
   };
+  
 
 
   return (

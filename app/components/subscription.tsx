@@ -43,7 +43,6 @@ const reports = [
 
 const Subscription = () => {
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [subscriptionPlans, setSubscriptionPlans] = useState<
     SubscriptionPlan[]
   >([]);
@@ -53,47 +52,25 @@ const Subscription = () => {
       try {
         const storedSubscriptionId = await getLocalStorage("subscription_id");
         console.log("Stored Subscription ID:", storedSubscriptionId);
-
+  
         if (!storedSubscriptionId) {
           console.warn("No subscription ID found in local storage.");
           return;
         }
         setSubscriptionId(storedSubscriptionId);
-
+  
         const subscriptionList = await getSubscriptionList();
         const { data } = subscriptionList;
-
+  
         if (data && data.length > 0) {
-          let matchedPlan = data.find(
-            (plan: any) => plan._id === storedSubscriptionId
-          );
-          let purchasedPlan = data.find((plan: any) => plan.isPurchased);
-          let sortedPlans = [...data];
-
-          if (matchedPlan) {
-            setSelectedPlan(matchedPlan._id);
-            sortedPlans = [
-              matchedPlan,
-              ...data.filter((plan: any) => plan._id !== matchedPlan._id),
-            ];
-          } else if (purchasedPlan) {
-            setSelectedPlan(purchasedPlan._id);
-            sortedPlans = [
-              purchasedPlan,
-              ...data.filter((plan: any) => plan._id !== purchasedPlan._id),
-            ];
-          } else {
-            // Default to the first available plan if no match found
-            setSelectedPlan(data[0]._id);
-          }
-
-          setSubscriptionPlans(sortedPlans);
+          setSubscriptionPlans(data);
         }
       } catch (error) {
         console.log(error);
       }
     })();
   }, []);
+  
 
   const RAZORPAY_KEY = "rzp_test_GLComtpgG1StCu";
 
@@ -135,9 +112,8 @@ const Subscription = () => {
             key={plan._id}
             style={[
               styles.planCard,
-              selectedPlan === plan._id && styles.selectedPlanCard,
+              // selectedPlan === plan._id && styles.selectedPlanCard,
             ]}
-            onPress={() => setSelectedPlan(plan._id)}
             disabled={plan.isPurchased}
           >
             {plan.isPurchased && (
@@ -159,8 +135,7 @@ const Subscription = () => {
                 }}
               >
                 <Text style={styles.planPrice}>{currency(plan.amount)}</Text>
-
-                {!plan.isPurchased ? (
+                {!plan.isPurchased && (
                   <View
                     style={{
                       width: "50%",
@@ -175,27 +150,6 @@ const Subscription = () => {
                       customStyle={{ backgroundColor: "#1a237e", padding: 10 }}
                     />
                   </View>
-                ) : (
-                  selectedPlan === plan._id && ( // ✅ Show only for selected purchased plan
-                    <View
-                      style={{
-                        width: "50%",
-                        flexDirection: "row",
-                        justifyContent: "flex-end",
-                        alignItems: "flex-end",
-                      }}
-                    >
-                      <CustomButton
-                        text="હાલની યોજના"
-                        handlePress={async () => {}}
-                        customStyle={{
-                          backgroundColor: "#3f51b5",
-                          padding: 10,
-                        }}
-                        isDisabled={true}
-                      />
-                    </View>
-                  )
                 )}
               </View>
             </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Link } from "expo-router";
 import {
@@ -18,7 +18,7 @@ import { useRouter ,usePathname} from "expo-router";
 import { deleteHead, getHeads, updateHeads } from "@/helper/api-communication";
 import { handleSplitName } from "@/helper/splitName";
 import { currency } from "@/helper/currency";
-
+import { useEditContext } from "../context/editIdContext";
 import { useRoute } from "@react-navigation/native";
 import { useCustomerContext } from "../context/customerContext";
 import Header from "../components/header";
@@ -35,7 +35,8 @@ const Home = () => {
   const router = useRouter();
   const pathname = usePathname()
   const { customer, setCustomers } = useCustomerContext();
-  const [editingId, setEditingId] = useState<number | null>(null);
+  // const [editingId, setEditingId] = useState<number | null>(null);
+  const {editingId,setEditingId} = useEditContext()
   const [filterData,setFilterData] = useState<any>([]);
   const [isSorted, setIsSorted] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
